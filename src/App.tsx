@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 // import { PrivateRoute } from "./utils";
-import { Page403, Page500, Success } from "./pages";
-import RouteClient from "./pages/client/RouteClient";
+import { Page403, Page500, Success } from "@/pages";
+import RouteClient from "@/pages/client/RouteClient";
 
 function App() {
   return (
