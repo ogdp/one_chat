@@ -2,51 +2,62 @@ import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 import mongooseDelete from "mongoose-delete";
 const plugins = [mongoosePaginate, mongooseDelete];
+const informationSchema = new mongoose.Schema({
+  firstName: {
+    type: String,
+    minLength: 2,
+    maxLength: 32,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    minLength: 2,
+    maxLength: 32,
+    required: true,
+  },
+  dateOfBirth: {
+    type: Date,
+    required: true,
+    trim: true,
+  },
+  gender: {
+    type: String,
+    required: true,
+  },
+  location: {
+    type: String,
+    minLength: 3,
+    maxLength: 32,
+  },
+  province: {
+    type: String,
+    minLength: 3,
+    maxLength: 32,
+  },
+  avatar_url: {
+    type: Array,
+  },
+});
+
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
-      type: String,
-      minLength: 2,
-      maxLength: 32,
-      required: true,
-    },
-    lastName: {
-      type: String,
-      minLength: 2,
-      maxLength: 32,
-      required: true,
-    },
     email_tel: {
       type: String,
       minLength: 2,
       maxLength: 32,
       required: true,
-      // unique: true, // cho phép tạo duy nhất trường chứa email_tel
     },
-    dateOfBirth: {
-      type: Date,
-      required: true,
-      trim: true,
-    },
-    gender: {
+    active_status: {
       type: String,
-      required: true,
+      default: "active",
     },
-    avatar_url: {
-      type: Array,
-    },
-    location: {
+    role: {
       type: String,
-      minLength: 3,
-      maxLength: 32,
+      default: "member",
     },
-    province: {
-      type: String,
-      minLength: 3,
-      maxLength: 32,
-    },
-    refreshToken: {
-      type: Array,
+    information: {
+      type: informationSchema,
+      default: {},
     },
     password: {
       type: String,
@@ -54,10 +65,8 @@ const userSchema = new mongoose.Schema(
       maxLength: 256,
       required: true,
     },
-    role: {
-      type: String,
-      default: "member",
-      required: true,
+    refreshToken: {
+      type: Array,
     },
   },
   { timestamps: true, versionKey: false }
