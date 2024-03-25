@@ -18,7 +18,8 @@ app.use(express.json());
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 // Bỏ block fetch api CORS
-app.use(cors());
+// app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(morgan("tiny"));
 
 // Theme home

@@ -35,16 +35,18 @@ export const getAll = async (req, res) => {
     });
   }
 };
-export const get = async (req, res) => {
+export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.uid);
     if (!user) {
       return res.status(400).json({
-        message: "Người dùng không tồn tại",
+        error: true,
+        message: "User does not exist.",
       });
     }
     return res.status(200).json({
-      message: "Lấy người dùng thành công",
+      success: true,
+      message: "Retrieve user list successfully.",
       user,
     });
   } catch (error) {
@@ -53,6 +55,50 @@ export const get = async (req, res) => {
     });
   }
 };
+
+const filterUserForGuest = (user) => {
+  const {
+    _id,
+    active_status,
+    role,
+    information,
+    deleted,
+    createdAt,
+    updatedAt,
+  } = user;
+  return {
+    _id,
+    active_status,
+    role,
+    information,
+    deleted,
+    createdAt,
+    updatedAt,
+  };
+};
+
+export const getGuest = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.uid);
+    if (!user) {
+      return res.status(400).json({
+        error: true,
+        message: "User does not exist.",
+      });
+    }
+    const userGuest = filterUserForGuest(user);
+    return res.status(200).json({
+      success: true,
+      message: "Retrieve user list successfully.",
+      userGuest,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+
 export const create = async (req, res) => {
   try {
     const { error } = await createUserSchema.validate(req.body, {
@@ -65,12 +111,14 @@ export const create = async (req, res) => {
     }
     const user = await User.create(req.body);
     return res.status(201).json({
+      success: true,
       message: "Account registration successful",
       user,
     });
   } catch (error) {
     return res.status(400).json({
-      error: error.message,
+      error: true,
+      message: error.message,
     });
   }
 };
@@ -89,6 +137,7 @@ export const update = async (req, res) => {
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
       return res.status(400).json({
+        error: true,
         message: "Password does not match",
       });
     }
@@ -99,12 +148,14 @@ export const update = async (req, res) => {
       { new: true }
     );
     return res.status(200).json({
+      success: true,
       message: "Account updated successfully",
       userUpdate,
     });
   } catch (error) {
     return res.status(400).json({
-      error: error.message,
+      error: true,
+      message: error.message,
     });
   }
 };
@@ -113,16 +164,19 @@ export const remove = async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
       return res.status(400).json({
+        error: true,
         message: "Failed to delete user",
       });
     }
     return res.status(200).json({
+      success: true,
       message: "User successfully deleted",
       user,
     });
   } catch (error) {
     return res.status(400).json({
-      error: error.message,
+      error: true,
+      message: error.message,
     });
   }
 };
