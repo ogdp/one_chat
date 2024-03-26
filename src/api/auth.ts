@@ -6,7 +6,7 @@ export const authApi = createApi({
   tagTypes: ["Auth"],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({
-    loginAccount: builder.mutation({
+    siginAccount: builder.mutation({
       query: (data) => ({
         url: "/signin",
         method: "POST",
@@ -15,7 +15,7 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
-    registerAccount: builder.mutation({
+    siginupAccount: builder.mutation({
       query: (data) => ({
         url: "/signup",
         method: "POST",
@@ -75,8 +75,8 @@ export const authApi = createApi({
 });
 
 export const {
-  useLoginAccountMutation,
-  useRegisterAccountMutation,
+  useSiginAccountMutation,
+  useSiginupAccountMutation,
   useInfoAccountQuery,
   useLogoutAccountMutation,
   useUpdateInforMutation,

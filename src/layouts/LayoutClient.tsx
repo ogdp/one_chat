@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import { HeaderC, HomeC, FooterC } from "../../components";
+import { HeaderC, HomeC, FooterC } from "@/components";
 
-const BaseClient = () => {
+const LayoutClient = () => {
   return (
     <>
       <div className="bg-backgroundLight dark:bg-backgroundDark">
@@ -17,4 +17,4 @@ const BaseClient = () => {
   );
 };
 
-export default BaseClient;
+export default LayoutClient;

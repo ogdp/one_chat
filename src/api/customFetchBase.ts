@@ -22,7 +22,10 @@ const customFetchBase: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   // eslint-disable-next-line
-  if ((result.error?.data as any)?.message === "Token đã hết hạn!") {
+  if (
+    (result.error?.data as any)?.message ===
+    "Please check the syntax of the access code"
+  ) {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
 

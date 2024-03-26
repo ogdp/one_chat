@@ -1,12 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-
-import BaseClient from "./BaseClient";
+import LayoutAuth from "@/layouts/LayoutAuth";
 
 const RouteClient = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<BaseClient />}>
+        <Route index element={<LayoutAuth />}>
           {/* <Route index element={<HomePage />} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/hotel-list" element={<HotelListPage />} />

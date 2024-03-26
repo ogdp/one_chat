@@ -1,8 +1,8 @@
 // Auth API
 import {
   authApi,
-  useLoginAccountMutation,
-  useRegisterAccountMutation,
+  useSiginAccountMutation,
+  useSiginupAccountMutation,
   useInfoAccountQuery,
   useLogoutAccountMutation,
   useGetCodeChangePasswordMutation,
@@ -11,8 +11,8 @@ import {
 } from "./auth";
 export {
   authApi,
-  useLoginAccountMutation,
-  useRegisterAccountMutation,
+  useSiginAccountMutation,
+  useSiginupAccountMutation,
   useInfoAccountQuery,
   useLogoutAccountMutation,
   useGetCodeChangePasswordMutation,
