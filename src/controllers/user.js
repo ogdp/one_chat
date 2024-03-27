@@ -151,6 +151,8 @@ export const update = async (req, res) => {
       req.body,
       { new: true }
     );
+    user.password = undefined;
+    user.refreshToken = undefined;
     return res.status(200).json({
       success: true,
       message: "Account updated successfully",
