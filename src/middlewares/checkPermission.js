@@ -36,7 +36,6 @@ const getIDToken = async (token) => {
   try {
     // Verify and decode the JWT
     const decodedToken = await Jwt.verify(token, JWT_SECRET_KEY);
-    console.log(decodedToken);
     const { id } = decodedToken;
     return id;
   } catch (error) {
@@ -54,16 +53,16 @@ const checkTokenOwnership = async (req, res, next) => {
     }
     const token = req.headers.authorization.split(" ")[1];
     const uid = await getIDToken(token);
-    console.log("uid", uid);
 
     // Func
-
-    if (uid !== req.params["uid"]) {
+    if (!uid || uid === false) {
       return res.status(403).json({
         error: true,
         message: "Access denied",
       });
     }
+    req.uid = uid;
+
     const user = await User.findById(uid);
     if (!user) {
       return res.status(403).json({

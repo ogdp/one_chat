@@ -37,16 +37,19 @@ export const getAll = async (req, res) => {
 };
 export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.params.uid);
+    const user = await User.findById(String(req.uid));
+
     if (!user) {
       return res.status(400).json({
         error: true,
         message: "User does not exist.",
       });
     }
+    user.password = undefined;
+    user.refreshToken = undefined;
     return res.status(200).json({
       success: true,
-      message: "Retrieve user list successfully.",
+      message: "Get user information successfully.",
       user,
     });
   } catch (error) {
@@ -79,7 +82,7 @@ const filterUserForGuest = (user) => {
 
 export const getGuest = async (req, res) => {
   try {
-    const user = await User.findById(req.params.uid);
+    const user = await User.findById(String(req.params.uid));
     if (!user) {
       return res.status(400).json({
         error: true,
@@ -94,7 +97,8 @@ export const getGuest = async (req, res) => {
     });
   } catch (error) {
     return res.status(400).json({
-      error: error.message,
+      error: true,
+      message: error.message,
     });
   }
 };

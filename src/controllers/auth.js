@@ -90,7 +90,9 @@ export const signin = async (req, res) => {
     );
     // ==
     userNew.password = undefined;
+    userNew.refreshToken = undefined;
     return res.status(200).json({
+      success: true,
       message: "Signed successfully",
       accessToken: accessToken,
       refreshToken: refreshToken,

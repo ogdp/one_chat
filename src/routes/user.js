@@ -12,10 +12,10 @@ import {
 const router = express.Router();
 
 router.get("/", getAll);
+router.get("/me", checkTokenOwnership, getMe);
 router.get("/:uid", getGuest);
-router.get("/me/:uid", checkTokenOwnership, getMe);
 router.post("", create);
 router.patch("/:uid", checkTokenOwnership, update);
-router.delete("/:uid", remove);
+router.delete("/:uid", checkTokenOwnership, remove);
 
 export default router;
