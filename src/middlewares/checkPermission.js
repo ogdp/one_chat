@@ -7,19 +7,39 @@ const { JWT_SECRET_KEY } = process.env;
 
 const tokenExistsDB = async (req, res, next) => {
   try {
-    if (!req.headers.authorization) {
-      return res.status(401).json({
+    // console.log(req?.headers.cookie);
+    const cookieString = req?.headers.cookie;
+    const tokens = {};
+
+    // Phân tích chuỗi cookie thành một mảng các phần
+    cookieString.split(";").forEach((cookie) => {
+      const [key, value] = cookie.trim().split("=");
+      tokens[key] = value;
+    });
+    const accessToken = tokens["accessToken"] || "";
+    const refreshToken = tokens["refreshToken"] || "";
+
+    // Log kết quả
+    // console.log("accessToken:", accessToken);
+    // console.log("refreshToken:", refreshToken);
+
+    if (!accessToken || !refreshToken) {
+      return res.status(400).json({
         error: true,
-        message: "Sign in to continue",
+        type: "token",
+        message: "Please log in to continue",
       });
     }
-    const token = req.headers.authorization.split(" ")[1];
-    const { id } = await Jwt.verify(token, JWT_SECRET_KEY);
-    const { refreshToken } = await User.findById(id);
-    const doesTokenExist = refreshToken.some((item) => item.token === token);
+
+    const { id } = await Jwt.verify(refreshToken, JWT_SECRET_KEY);
+    const { refreshTokenList } = await User.findById(id);
+    const doesTokenExist = refreshTokenList.some(
+      (item) => item.token === refreshToken
+    );
     if (!doesTokenExist) {
       return res.status(401).json({
         error: true,
+        type: "token",
         message: "Insufficient privileges for token.",
       });
     }
@@ -27,6 +47,7 @@ const tokenExistsDB = async (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       error: true,
+      type: "token",
       message: `${error.message} => Check refreshToken error`,
     });
   }
@@ -37,43 +58,93 @@ const getIDToken = async (token) => {
     // Verify and decode the JWT
     const decodedToken = await Jwt.verify(token, JWT_SECRET_KEY);
     const { id } = decodedToken;
-    return id;
+    return {
+      success: true,
+      id,
+    };
   } catch (error) {
-    return false;
+    if (error instanceof Jwt.TokenExpiredError) {
+      // Token has expired
+      // console.log("Token has expired");
+      return {
+        error: true,
+        message: "Token has expired",
+      };
+    } else if (error instanceof Jwt.JsonWebTokenError) {
+      // Invalid token or signature
+      // console.log("Invalid token or signature");
+      return {
+        error: true,
+        message: "Invalid token or signature",
+      };
+    } else {
+      // Other unexpected errors
+      // console.log("An error occurred:", error.message);
+      return {
+        error: true,
+        message: error.message,
+      };
+    }
   }
 };
 
 const checkTokenOwnership = async (req, res, next) => {
   try {
-    if (!req.headers.authorization) {
+    // console.log(req?.headers.cookie);
+    const cookieString = req?.headers.cookie;
+    const tokens = {};
+
+    // Phân tích chuỗi cookie thành một mảng các phần
+    cookieString.split(";").forEach((cookie) => {
+      const [key, value] = cookie.trim().split("=");
+      tokens[key] = value;
+    });
+    const accessToken = tokens["accessToken"] || "";
+    const refreshToken = tokens["refreshToken"] || "";
+
+    // Log kết quả
+    // console.log("accessToken:", accessToken);
+    // console.log("refreshToken:", refreshToken);
+
+    if (!accessToken || !refreshToken) {
       return res.status(400).json({
         error: true,
+        type: "token",
         message: "Please log in to continue",
       });
     }
-    const token = req.headers.authorization.split(" ")[1];
-    const uid = await getIDToken(token);
 
-    // Func
-    if (!uid || uid === false) {
-      return res.status(403).json({
+    const token = accessToken;
+
+    // logout
+    // res.cookie("accessToken", "", { maxAge: 1 });
+    // res.cookie("refreshToken", "", { maxAge: 1 });
+
+    const resGetID = await getIDToken(token);
+    if (!resGetID.id) {
+      return res.status(404).json({
         error: true,
-        message: "Access denied",
+        type: "token",
+        message: resGetID.message,
       });
     }
-    req.uid = uid;
 
-    const user = await User.findById(uid);
+    req.uid = resGetID.id;
+
+    const user = await User.findById(resGetID.id);
     if (!user) {
       return res.status(403).json({
         error: true,
-        message: "Not found data",
+        type: "token",
+        message: "Not found user",
       });
     }
     next();
   } catch (error) {
+    console.log(error);
     return res.status(403).json({
       error: true,
+      type: "token",
       message: `${error.message} => Please check the syntax of the access code`,
     });
   }

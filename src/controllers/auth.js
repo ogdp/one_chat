@@ -91,6 +91,12 @@ export const signin = async (req, res) => {
     // ==
     userNew.password = undefined;
     userNew.refreshToken = undefined;
+    res.cookie("accessToken", accessToken, { httpOnly: true, maxAge: 3600000 });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 604800000,
+    });
+
     return res.status(200).json({
       success: true,
       message: "Signed successfully",
@@ -101,6 +107,17 @@ export const signin = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       error: error.message,
+    });
+  }
+};
+export const logout = async (req, res) => {
+  try {
+    res.cookie("accessToken", "", { httpOnly: true, maxAge: 1 });
+    res.cookie("refreshToken", "", { httpOnly: true, maxAge: 1 });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      message: error.message,
     });
   }
 };

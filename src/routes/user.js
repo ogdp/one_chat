@@ -15,7 +15,7 @@ router.get("/", getAll);
 router.get("/me", checkTokenOwnership, getMe);
 router.get("/:uid", getGuest);
 router.post("", create);
-router.patch("/:uid", checkTokenOwnership, update);
-router.delete("/:uid", checkTokenOwnership, remove);
+router.patch("/", checkTokenOwnership, update);
+router.delete("/", checkTokenOwnership, remove);
 
 export default router;

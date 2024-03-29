@@ -12,7 +12,7 @@ export const signAccessToken = async (userId) => {
       { id: userId, type: "accessToken" },
       JWT_SECRET_KEY,
       {
-        expiresIn: 1800,
+        expiresIn: 3600,
       }
     );
     return accessToken;
@@ -48,15 +48,15 @@ const checkExpToken = async (token) => {
   } catch (error) {
     if (error instanceof Jwt.TokenExpiredError) {
       // Token has expired
-      // console.log("Token has expired");
+      console.log("Token has expired");
       return true;
     } else if (error instanceof Jwt.JsonWebTokenError) {
       // Invalid token or signature
-      // console.log("Invalid token or signature");
+      console.log("Invalid token or signature");
       return false;
     } else {
       // Other unexpected errors
-      // console.log("An error occurred:", error.message);
+      console.log("An error occurred:", error.message);
       return false;
     }
   }
@@ -69,17 +69,36 @@ const getPayload = (base64String) => {
 };
 
 export const generateToken = async (req, res) => {
-  if (!req.query.token) {
+  // console.log(req?.headers.cookie);
+  const cookieString = req?.headers.cookie;
+  const tokens = {};
+
+  // Phân tích chuỗi cookie thành một mảng các phần
+  cookieString.split(";").forEach((cookie) => {
+    const [key, value] = cookie.trim().split("=");
+    tokens[key] = value;
+  });
+  const old_accessToken = tokens["accessToken"] || "";
+  const old_refreshToken = tokens["refreshToken"] || "";
+
+  // Log kết quả
+  // console.log("old_accessToken:", accessToken);
+  // console.log("old_refreshToken:", refreshToken);
+
+  if (!old_accessToken || !old_refreshToken) {
     return res.status(400).json({
       error: true,
-      message: "No token provided",
+      type: "token",
+      message: "Please log in to continue",
     });
   }
-  const verifyToken = await checkExpToken(req.query.token);
-  const validBase64 = getPayload(req.query.token);
+
+  const verifyToken = await checkExpToken(old_refreshToken);
+  const validBase64 = getPayload(old_refreshToken);
   if (!validBase64)
     return res.status(403).json({
       error: true,
+      type: "token",
       message: "Invalid base64 string format",
     });
 
@@ -91,11 +110,12 @@ export const generateToken = async (req, res) => {
     try {
       const isMatch = await User.findById(payload.id);
       const doesTokenExist = isMatch.refreshToken.some(
-        (item) => item.token === req.query.token
+        (item) => item.token === old_refreshToken
       );
       if (!doesTokenExist) {
         return res.status(401).json({
           error: true,
+          type: "token",
           message: "Insufficient privileges for token.",
         });
       }
@@ -104,6 +124,7 @@ export const generateToken = async (req, res) => {
       if (accessToken == null) {
         return res.status(400).json({
           error: true,
+          type: "token",
           message: "Error genrate access token",
         });
       }
@@ -112,13 +133,15 @@ export const generateToken = async (req, res) => {
       const { refreshToken, expRf } = await signRefreshToken(payload.id);
       if (refreshToken == null) {
         return res.status(400).json({
+          error: true,
+          type: "token",
           message: "Error genrate refresh token",
         });
       }
 
       // Add token new and delete token old
       const newTokens = isMatch.refreshToken.filter(
-        (item) => item.token !== req.query.token
+        (item) => item.token !== old_refreshToken
       );
       const newArrRfToken = [
         ...newTokens,
@@ -133,6 +156,16 @@ export const generateToken = async (req, res) => {
         { new: true }
       );
       //
+
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        maxAge: 3600000,
+      });
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        maxAge: 604800000,
+      });
+
       return res.status(200).json({
         success: true,
         accessToken,
@@ -141,12 +174,14 @@ export const generateToken = async (req, res) => {
     } catch (error) {
       return res.status(401).json({
         error: true,
+        type: "token",
         message: `${error.message} => Check refreshToken error`,
       });
     }
   } else {
     return res.status(401).json({
       error: true,
+      type: "token",
       message: "Error token",
     });
   }

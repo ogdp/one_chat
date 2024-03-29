@@ -136,8 +136,7 @@ export const update = async (req, res) => {
         error: error.details.map((err) => err.message),
       });
     }
-
-    const user = await User.findById(req.params["uid"]);
+    const user = await User.findById(req.uid);
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
       return res.status(400).json({
@@ -147,12 +146,12 @@ export const update = async (req, res) => {
     }
     delete req.body.password;
     const userUpdate = await User.findByIdAndUpdate(
-      { _id: req.params["uid"] },
+      { _id: req.uid },
       req.body,
       { new: true }
     );
-    user.password = undefined;
-    user.refreshToken = undefined;
+    userUpdate.password = undefined;
+    userUpdate.refreshToken = undefined;
     return res.status(200).json({
       success: true,
       message: "Account updated successfully",
@@ -167,7 +166,7 @@ export const update = async (req, res) => {
 };
 export const remove = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findByIdAndDelete(req.uid);
     if (!user) {
       return res.status(400).json({
         error: true,
