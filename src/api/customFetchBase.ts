@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import {
   BaseQueryFn,
   FetchArgs,
@@ -6,11 +5,15 @@ import {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { Mutex } from "async-mutex";
+import { message } from "antd";
+// import { logout } from '../features/userSlice';
 
+// Create a new mutex
 const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://one-chat-server.vercel.app/api",
+  credentials: "include",
 });
 
 const customFetchBase: BaseQueryFn<
@@ -18,50 +21,60 @@ const customFetchBase: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
+  // wait until the mutex is available without locking it
   await mutex.waitForUnlock();
-  let result = await baseQuery(args, api, extraOptions);
-
-  // eslint-disable-next-line
-  if (
-    (result.error?.data as any)?.message ===
-    "Please check the syntax of the access code"
-  ) {
-    if (!mutex.isLocked()) {
-      const release = await mutex.acquire();
-
-      try {
-        const refreshResult = await baseQuery(
-          {
-            url: "auth/refresh-token",
-            method: "GET",
-            credentials: "include",
-          },
-          api,
-          extraOptions
-        );
-
-        if (refreshResult.data) {
-          result = await baseQuery(args, api, extraOptions);
-        } else {
-          toast.error("Phiên đăng nhập đã hết hạn");
-
-          await baseQuery(
-            {
-              url: "auth/logout",
-              method: "POST",
-              credentials: "include",
-            },
+  let result: any = await baseQuery(args, api, extraOptions);
+  if (result?.error?.data?.type === "token") {
+    // console.log("Kiểu Token");
+    if (result?.error?.data?.message === "Token has expired") {
+      // console.log("Hết hạn à");
+      if (!mutex.isLocked()) {
+        // console.log("Vao isLocked");
+        const release = await mutex.acquire();
+        try {
+          const refreshResult: any = await baseQuery(
+            { credentials: "include", url: "/generateToken" },
             api,
             extraOptions
           );
+          // console.log("Try day");
+          // console.log("Gen thanh cong", refreshResult);
+          if (refreshResult.data.success) {
+            result = await baseQuery(args, api, extraOptions);
+          } else {
+            // console.log("Loi gen token");
+          }
+          // if (refreshResult.data) {
+          //   result = await baseQuery(args, api, extraOptions);
+          // } else {
+          //   // message.error("Phiên đăng nhập đã hết hạn");
+          //   // window.location.href = "/auth";
+          //   // await baseQuery(
+          //   //   {
+          //   //     url: "auth/logout",
+          //   //     method: "POST",
+          //   //     credentials: "include",
+          //   //   },
+          //   //   api,
+          //   //   extraOptions
+          //   // );
+          // }
+        } finally {
+          // console.log("Lỗi genarate Token");
+          // console.log("Finally Try");
+          // release must be called once the mutex should be released again.
+          release();
         }
-      } finally {
-        release();
+      } else {
+        // console.log("else isLocked");
+        // wait until the mutex is available without locking it
+        await mutex.waitForUnlock();
+        result = await baseQuery(args, api, extraOptions);
       }
-    } else {
-      await mutex.waitForUnlock();
-      result = await baseQuery(args, api, extraOptions);
     }
+    // console.log("Lỗi khác token hết hạn");
+    message.error("Phiên đăng nhập đã hết hạn");
+    window.location.href = "/auth";
   }
 
   return result;

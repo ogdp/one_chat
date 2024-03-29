@@ -1,4 +1,5 @@
-import { IInformation, IUser } from "./user";
 import { ISignInResponse } from "./auth";
+import { IGuest, IUpdateUser } from "./user";
+import { ITokenData } from "./token";
 
-export type { IInformation, IUser, ISignInResponse };
+export type { ISignInResponse, IGuest, IUpdateUser, ITokenData };

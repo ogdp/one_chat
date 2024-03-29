@@ -1,25 +1,44 @@
-export interface IInformation {
+export interface IGuest {
+  success: boolean;
+  message: string;
+  userGuest: IUserGuest;
+}
+interface IUserGuest {
   _id: string;
+  active_status: string;
+  role: string;
+  information: Information;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Information {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
   gender: string;
-  location?: string;
-  province?: string;
-  avatar_url: Array<string>;
-  createdAt?: string;
-  updatedAt?: string;
+  location: string;
+  province: string;
+  avatar_url: string[];
+  _id: string;
 }
 
-export interface IUser {
-  _id: string;
+export interface IUpdateUser {
+  _id?: string;
   email_tel: string;
-  active_status: boolean;
+  active_status: string;
   role: string;
-  information: IInformation;
-  password?: string;
-  refreshToken?: Array<string>;
-  deleted?: boolean;
-  createdAt: string;
-  updatedAt: string;
+  information: Information2;
+  password: string;
+}
+
+export interface Information2 {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  avatar_url: string[];
+  location: string;
+  province: string;
 }

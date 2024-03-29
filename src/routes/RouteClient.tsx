@@ -1,31 +1,18 @@
 import { Route, Routes } from "react-router-dom";
-
+import InfoUser from "@/components/auth/Profile/InfoUser";
 import LayoutClient from "@/layouts/LayoutClient";
+import HomePage from "@/pages/client/Home/HomePage";
+import { Page404 } from "@/pages";
 
 const RouteClient = () => {
   return (
     <>
       <Routes>
         <Route path="/" element={<LayoutClient />}>
-          {/* <Route index element={<HomePage />} />
-          <Route path="/booking" element={<BookingPage />} />
-          <Route path="/hotel-list" element={<HotelListPage />} />
-          <Route path="/hotel-detail/:id" element={<HotelDetailPage />} />
-          <Route path="/payment/:id" element={<PaymentPage />} />
-          <Route
-            path="/complaint-resolution-policy"
-            element={<ComplaintResolutionPolicy />}
-          />
-          <Route
-            path="/regulations-booking-information"
-            element={<RegulationsBookingInformation />}
-          />
-          <Route path="/general-rules" element={<GeneralRules />} />
-          <Route path="/general-terms" element={<GeneralTerms />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
+          <Route index element={<HomePage />} />
+          <Route path="/profiles" element={<InfoUser />} />
         </Route>
-
-        {/* <Route path="/*" element={<Page404 />} /> */}
+        <Route path="/*" element={<Page404 />} />
       </Routes>
     </>
   );

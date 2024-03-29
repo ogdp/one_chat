@@ -1,10 +1,9 @@
-import HomeC from "../../../components/client/Home/HomeC";
+import { FooterC, HeaderC } from "@/components";
+
 const HomePage = () => {
   return (
     <>
-      <div className="flex flex-col gap-10">
-        <HomeC />
-      </div>
+      <div className="flex flex-col gap-10">Home Page</div>
     </>
   );
 };

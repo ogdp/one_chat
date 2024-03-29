@@ -3,19 +3,23 @@ import {
   authApi,
   useSiginAccountMutation,
   useSiginupAccountMutation,
-  useInfoAccountQuery,
   useLogoutAccountMutation,
-  useGetCodeChangePasswordMutation,
-  useCheckCodeChangePasswordMutation,
-  useChangePasswordMutation,
 } from "./auth";
+// User API
+import {
+  userApi,
+  useGetGuestQuery,
+  useGetMeQuery,
+  useUpdateUserMutation,
+} from "./user";
+
 export {
   authApi,
   useSiginAccountMutation,
   useSiginupAccountMutation,
-  useInfoAccountQuery,
   useLogoutAccountMutation,
-  useGetCodeChangePasswordMutation,
-  useCheckCodeChangePasswordMutation,
-  useChangePasswordMutation,
+  userApi,
+  useGetGuestQuery,
+  useGetMeQuery,
+  useUpdateUserMutation,
 };

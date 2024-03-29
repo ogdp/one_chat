@@ -1,31 +1,29 @@
 export interface ISignInResponse {
+  success: boolean;
   message: string;
   accessToken: string;
   refreshToken: string;
-  userNew: IUser;
+  userNew: UserNew;
 }
 
-export interface IUser {
-  active_status: string;
-  information: {
-    avatar_url: string[];
-    _id: string;
-  };
+export interface UserNew {
   _id: string;
-  firstName: string;
-  lastName: string;
   email_tel: string;
-  dateOfBirth: string;
-  gender: string;
-  avatar_url: string[];
-  refreshToken: IRefreshToken[];
+  active_status: string;
   role: string;
+  information: Information;
   deleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface IRefreshToken {
-  key: number;
-  token: string;
+export interface Information {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  location: string;
+  province: string;
+  avatar_url: string[];
+  _id: string;
 }
