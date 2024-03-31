@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { FooterC, HeaderC } from "@/components";
+import { HeaderC } from "@/components";
 import NavBarC from "@/components/client/NavBar/NavBarC";
 
 const LayoutClient = () => {
@@ -15,11 +15,10 @@ const LayoutClient = () => {
           </div>
         </aside>
         <main className="pl-[18%] flex pt-[57px]">
-          <div className="w-full min-h-[120vh]">
+          <div className="w-full h-[calc(100vh_-_57px)]">
             <Outlet />
           </div>
         </main>
-        {/* <FooterC /> */}
       </div>
     </>
   );
