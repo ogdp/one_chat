@@ -7,7 +7,7 @@ const LayoutClient = () => {
     <>
       <div className="bg-backgroundLight dark:bg-backgroundDark">
         <aside>
-          <div className="fixed top-0 left-0 min-w-full bg-white">
+          <div className="fixed top-0 left-0 min-w-full bg-white z-10">
             <HeaderC />
           </div>
           <div className="fixed w-[18%] pt-[57px] min-h-screen ">
