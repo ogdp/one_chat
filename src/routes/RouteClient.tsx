@@ -1,9 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import InfoUser from "@/components/auth/Profile/InfoUser";
 import LayoutClient from "@/layouts/LayoutClient";
-import HomePage from "@/pages/client/HomePage";
-import { Page404 } from "@/pages";
-import ChatPage from "@/pages/client/ChatPage";
+import { ChatPage, HomePage, Page404, ProfilesPage } from "@/pages";
+import ResultSearchUser from "@/pages/client/ResultSearchUser";
 
 const RouteClient = () => {
   return (
@@ -13,8 +11,8 @@ const RouteClient = () => {
           <Route index element={<HomePage />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/chat/:uid" element={<ChatPage />} />
-
-          <Route path="/profiles" element={<InfoUser />} />
+          <Route path="/profiles" element={<ProfilesPage />} />
+          <Route path="/search/top" element={<ResultSearchUser />} />
         </Route>
         <Route path="/*" element={<Page404 />} />
       </Routes>

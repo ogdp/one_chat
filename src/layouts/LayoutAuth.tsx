@@ -1,4 +1,4 @@
-import Signin from "@/pages/auth/Signin";
+import Signin from "@/pages/auth/SigninPage";
 const LayoutAuth = () => {
   return (
     <>

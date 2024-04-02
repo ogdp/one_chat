@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 const ChatPage = () => {
   const pathh = useParams();
-  console.log(pathh);
+  // console.log(pathh);
   return (
     <>
       <section className="flex min-h-full">

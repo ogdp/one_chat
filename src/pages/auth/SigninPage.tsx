@@ -2,7 +2,7 @@ import Signup from "@/components/auth/Signup";
 import { useState } from "react";
 import Signin from "@/components/auth/Signin";
 
-const index = () => {
+const SigninPage = () => {
   const [mdReg, setMdReg] = useState(false);
 
   const handleModel = (): void => {
@@ -19,4 +19,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default SigninPage;

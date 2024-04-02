@@ -12,8 +12,11 @@ import { message } from "antd";
 const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://one-chat-server.vercel.app/api",
+  baseUrl: "http://localhost:8080/api",
   credentials: "include",
+  prepareHeaders: (headers) => {
+    return headers;
+  },
 });
 
 const customFetchBase: BaseQueryFn<
@@ -72,7 +75,7 @@ const customFetchBase: BaseQueryFn<
         result = await baseQuery(args, api, extraOptions);
       }
     }
-    // console.log("Lỗi khác token hết hạn");
+    console.log("Lỗi khác token hết hạn");
     message.error("Phiên đăng nhập đã hết hạn");
     window.location.href = "/auth";
   }

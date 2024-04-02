@@ -11,6 +11,8 @@ import {
   useGetGuestQuery,
   useGetMeQuery,
   useUpdateUserMutation,
+  useLazyGetMeQuery,
+  useLazySearchUserQuery,
 } from "./user";
 
 export {
@@ -22,4 +24,6 @@ export {
   useGetGuestQuery,
   useGetMeQuery,
   useUpdateUserMutation,
+  useLazyGetMeQuery,
+  useLazySearchUserQuery,
 };

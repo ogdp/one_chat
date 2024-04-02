@@ -8,8 +8,8 @@ export const userApi = createApi({
   baseQuery: customFetchBase,
   endpoints: (builder) => ({
     getMe: builder.query({
-      query: () => ({
-        url: "/users/me",
+      query: (me: string) => ({
+        url: `/users/${me}`,
         method: "GET",
       }),
       providesTags: ["User"],
@@ -31,8 +31,23 @@ export const userApi = createApi({
       }),
       providesTags: ["User"],
     }),
+    searchUser: builder.query({
+      query: (key: string, options?: string | "") => ({
+        url: `/users/search/top?key=${key}${
+          options !== undefined ? options : ""
+        }`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
   }),
 });
 
-export const { useGetGuestQuery, useGetMeQuery, useUpdateUserMutation } =
-  userApi;
+export const {
+  useGetGuestQuery,
+  useGetMeQuery,
+  useUpdateUserMutation,
+  useSearchUserQuery,
+  useLazySearchUserQuery,
+  useLazyGetMeQuery,
+} = userApi;

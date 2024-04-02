@@ -12,7 +12,7 @@ const SentenceRightChat = (props: IProps) => {
   return (
     <>
       <div className="flex justify-end my-2">
-        <Link to="/auth" className="order-2">
+        <Link to={`/profiles/?id=${props.uid}`} className="order-2">
           <div className="rounded-full">
             <img
               className="h-12 w-12 bg-cover"

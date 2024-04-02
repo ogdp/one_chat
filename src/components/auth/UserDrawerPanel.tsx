@@ -19,11 +19,13 @@ const UserDrawerPanel = (props: IProps) => {
               />
             </div>
             <button className="font-semibold ">
-              <Link to={"/profiles"}>Le Quang Minh Duc</Link>{" "}
+              <Link onClick={() => props.toggle()} to={"/profiles"}>
+                Le Quang Minh Duc
+              </Link>{" "}
             </button>
           </div>
           <div className="px-5 py-2 border-b-[1px] border-b-gray-200 hover:bg-gray-100">
-            <Link to="/profiles">
+            <Link onClick={() => props.toggle()} to="/profiles">
               <button className="flex items-center gap-x-1 justify-center font-medium">
                 <FiUser size={"18"} />
                 Thông tin tài khoản
@@ -31,7 +33,7 @@ const UserDrawerPanel = (props: IProps) => {
             </Link>
           </div>
           <div className="px-5 py-2 border-b-[1px] border-b-gray-200 hover:bg-gray-100">
-            <Link to="/change-password">
+            <Link onClick={() => props.toggle()} to="/change-password">
               <button className="flex items-center gap-x-1 justify-center font-medium">
                 <FiSettings size={"18"} />
                 Đổi mật khẩu
@@ -39,7 +41,7 @@ const UserDrawerPanel = (props: IProps) => {
             </Link>
           </div>
           <div className="px-5 py-2 border-b-[1px] border-b-gray-200 hover:bg-gray-100 text-red-600">
-            <Link to={"/logout"}>
+            <Link to={"/logout"} onClick={() => props.toggle()}>
               <button className="flex items-center gap-x-1 justify-center font-medium">
                 <FiPower size={"18"} />
                 Đăng xuất

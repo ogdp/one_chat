@@ -42,3 +42,29 @@ export interface Information2 {
   location: string;
   province: string;
 }
+
+export interface IUserProfiles {
+  success: boolean;
+  message: string;
+  user: IUserPro;
+}
+
+interface IUserPro {
+  _id: string;
+  email_tel: string;
+  active_status: string;
+  role: string;
+  information: InformationPro;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface InformationPro {
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  avatar_url: string[];
+  _id: string;
+}

@@ -1,14 +1,12 @@
 import { Link } from "react-router-dom";
-import { Avatar, Button, Input, Space } from "antd";
+import { Avatar, Button, Space } from "antd";
 import { useState } from "react";
 import { UserOutlined } from "@ant-design/icons";
 import UserDrawerPanel from "@/components/auth/UserDrawerPanel";
-
-const { Search } = Input;
+import SearchUser from "./SearchUser";
 
 const HeaderC = () => {
-  const [isLoad, setIsLoad] = useState<boolean>(false);
-  const [togglePanel, setTogglePanel] = useState<boolean>(true);
+  const [togglePanel, setTogglePanel] = useState<boolean>(false);
 
   const onHandlePanel = () => {
     setTogglePanel(!togglePanel);
@@ -24,10 +22,10 @@ const HeaderC = () => {
             </Link>
           </div>
           <div>
-            <Search size="large" placeholder="Tìm kiếm bạn bè" />
+            <SearchUser />
           </div>
           <div className="flex gap-x-3">
-            <Link to="/auth">
+            <Link to="/auth" className="hidden">
               <Button>Đăng nhập</Button>
             </Link>
             <Space size={16} wrap>
