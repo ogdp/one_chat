@@ -199,16 +199,30 @@ export const search = async (req, res) => {
       sort: {
         [_sort]: _order == "desc" ? 1 : -1,
       },
+      select: [
+        "_id",
+        "active_status",
+        "role",
+        "information",
+        "deleted",
+        "createdAt",
+        "updatedAt",
+      ],
     };
     const user = await User.paginate(
       {
         $or: [
           {
-            name: {
-              $regex: req.params.key,
+            "information.firstName": {
+              $regex: `${req.query.key}`,
               $options: "i",
             },
-            status: true,
+          },
+          {
+            "information.lastName": {
+              $regex: `${req.query.key}`,
+              $options: "i",
+            },
           },
         ],
       },
