@@ -159,11 +159,9 @@ export const generateToken = async (req, res) => {
 
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        maxAge: 3600000,
       });
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        maxAge: 604800000,
       });
 
       return res.status(200).json({

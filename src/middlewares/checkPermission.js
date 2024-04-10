@@ -93,7 +93,12 @@ const checkTokenOwnership = async (req, res, next) => {
     // console.log(req?.headers.cookie);
     const cookieString = req?.headers.cookie;
     const tokens = {};
-
+    if (!cookieString)
+      return res.status(401).json({
+        error: true,
+        type: "token",
+        message: "Please log in to continue",
+      });
     // Phân tích chuỗi cookie thành một mảng các phần
     cookieString.split(";").forEach((cookie) => {
       const [key, value] = cookie.trim().split("=");

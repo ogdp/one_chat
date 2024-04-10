@@ -91,10 +91,9 @@ export const signin = async (req, res) => {
     // ==
     userNew.password = undefined;
     userNew.refreshToken = undefined;
-    res.cookie("accessToken", accessToken, { httpOnly: true, maxAge: 3600000 });
+    res.cookie("accessToken", accessToken, { httpOnly: true });
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      maxAge: 604800000,
     });
 
     return res.status(200).json({
