@@ -14,6 +14,12 @@ import {
   useLazyGetMeQuery,
   useLazySearchUserQuery,
 } from "./user";
+import {
+  messageApi,
+  useGetMessagesMutation,
+  usePostMessageMutation,
+} from "./message";
+import { chatApi, useCreateChatMutation } from "./chat";
 
 export {
   authApi,
@@ -26,4 +32,9 @@ export {
   useUpdateUserMutation,
   useLazyGetMeQuery,
   useLazySearchUserQuery,
+  messageApi,
+  useGetMessagesMutation,
+  usePostMessageMutation,
+  chatApi,
+  useCreateChatMutation,
 };

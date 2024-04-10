@@ -3,8 +3,8 @@
 // Auth
 
 // Client
-import HeaderC from "./client/Header/HeaderC";
-import FooterC from "./client/Footer/FooterC";
+import HeaderComp from "./client/Header/HeaderComp";
+import FooterComp from "./client/Footer/FooterComp";
 import SearchUser from "./client/Header/SearchUser";
 
-export { HeaderC, FooterC, SearchUser };
+export { HeaderComp, FooterComp, SearchUser };

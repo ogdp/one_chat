@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { HeaderC } from "@/components";
+import { HeaderComp } from "@/components";
 import NavBarC from "@/components/client/NavBar/NavBarC";
 
 const LayoutClient = () => {
@@ -8,7 +8,7 @@ const LayoutClient = () => {
       <div className="bg-backgroundLight dark:bg-backgroundDark">
         <aside>
           <div className="fixed top-0 left-0 min-w-full bg-white z-10">
-            <HeaderC />
+            <HeaderComp />
           </div>
           <div className="fixed w-[18%] pt-[57px] min-h-screen ">
             <NavBarC />

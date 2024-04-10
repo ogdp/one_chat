@@ -5,7 +5,7 @@ import {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { Mutex } from "async-mutex";
-import { message } from "antd";
+
 // import { logout } from '../features/userSlice';
 
 // Create a new mutex
@@ -29,6 +29,7 @@ const customFetchBase: BaseQueryFn<
   let result: any = await baseQuery(args, api, extraOptions);
   if (result?.error?.data?.type === "token") {
     // console.log("Kiểu Token");
+    // console.log(result?.error?.data);
     if (result?.error?.data?.message === "Token has expired") {
       // console.log("Hết hạn à");
       if (!mutex.isLocked()) {
@@ -36,32 +37,21 @@ const customFetchBase: BaseQueryFn<
         const release = await mutex.acquire();
         try {
           const refreshResult: any = await baseQuery(
-            { credentials: "include", url: "/generateToken" },
+            { credentials: "include", url: "/auth/generateToken" },
             api,
             extraOptions
           );
           // console.log("Try day");
           // console.log("Gen thanh cong", refreshResult);
-          if (refreshResult.data.success) {
-            result = await baseQuery(args, api, extraOptions);
-          } else {
-            // console.log("Loi gen token");
+          if (refreshResult.error) {
+            // console.log("error gen token RF");
+            if (refreshResult?.error?.data?.error)
+              return (window.location.href = "/auth");
+            return console.log(refreshResult.error);
           }
-          // if (refreshResult.data) {
-          //   result = await baseQuery(args, api, extraOptions);
-          // } else {
-          //   // message.error("Phiên đăng nhập đã hết hạn");
-          //   // window.location.href = "/auth";
-          //   // await baseQuery(
-          //   //   {
-          //   //     url: "auth/logout",
-          //   //     method: "POST",
-          //   //     credentials: "include",
-          //   //   },
-          //   //   api,
-          //   //   extraOptions
-          //   // );
-          // }
+          if (refreshResult.data.success) {
+            return (result = await baseQuery(args, api, extraOptions));
+          }
         } finally {
           // console.log("Lỗi genarate Token");
           // console.log("Finally Try");
@@ -74,10 +64,12 @@ const customFetchBase: BaseQueryFn<
         await mutex.waitForUnlock();
         result = await baseQuery(args, api, extraOptions);
       }
+      return false;
+    } else {
+      // console.log("Lỗi khác token hết hạn");
+      // message.error("Phiên đăng nhập đã hết hạn");
+      return (window.location.href = "/auth");
     }
-    console.log("Lỗi khác token hết hạn");
-    message.error("Phiên đăng nhập đã hết hạn");
-    window.location.href = "/auth";
   }
 
   return result;

@@ -1,4 +1,7 @@
 import { Link } from "react-router-dom";
+import moment from "moment";
+import "moment/dist/locale/vi";
+moment.locale("vi");
 
 interface IProps {
   name: string;
@@ -14,7 +17,7 @@ const SentenceLeftChat = (props: IProps) => {
         <Link to={`/profiles/?id=${props.uid}`} className="order-1">
           <div className="rounded-full">
             <img
-              className="h-12 w-12 bg-cover"
+              className="h-12 w-12 bg-cover rounded-full"
               src={props.avatar_url[0]}
               alt=""
             />
@@ -22,7 +25,9 @@ const SentenceLeftChat = (props: IProps) => {
         </Link>
         <div className="max-w-[65%] bg-slate-100 rounded-md px-4 py-1 pb-3 order-2">
           <div>{props.content}</div>
-          <div className="text-xs text-gray-700 text-right ">{props.time}</div>
+          <div className="text-xs text-gray-700 text-right ">
+            {moment(props.time).fromNow()}
+          </div>
         </div>
       </div>
     </>

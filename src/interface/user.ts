@@ -49,7 +49,7 @@ export interface IUserProfiles {
   user: IUserPro;
 }
 
-interface IUserPro {
+export interface IUserPro {
   _id: string;
   email_tel: string;
   active_status: string;
