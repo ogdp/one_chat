@@ -47,14 +47,35 @@ export const createMessage = async (req, res) => {
 };
 export const getMessage = async (req, res) => {
   try {
-    const messages = await Message.find({ chat: req.params.chatId })
-      .populate(
-        "sender",
-        "information.firstName information.lastName information.avatar_url email_tel"
-      )
-      .populate("chat")
-      .lean()
-      .exec();
+    const {
+      _page = 1,
+      _order = "desc", // asc theo thu tu cu => moi
+      _sort = "createdAt",
+      _limit = 20,
+    } = req.query;
+    const options = {
+      page: _page,
+      limit: _limit,
+      sort: {
+        [_sort]: _order == "desc" ? 1 : -1,
+      },
+    };
+    const messages = await Message.paginate(
+      { chat: req.params.chatId },
+      {
+        options,
+        populate: [
+          {
+            path: "sender",
+            select:
+              "information.firstName information.lastName information.avatar_url email_tel",
+          },
+          {
+            path: "chat",
+          },
+        ],
+      }
+    );
     return res.status(200).send(messages);
   } catch (error) {
     return res.status(400).send(error.messages);
