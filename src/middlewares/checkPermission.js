@@ -144,6 +144,8 @@ const checkTokenOwnership = async (req, res, next) => {
         message: "Not found user",
       });
     }
+    user.password = undefined;
+    req.user = user;
     next();
   } catch (error) {
     console.log(error);

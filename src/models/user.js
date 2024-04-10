@@ -74,4 +74,6 @@ const userSchema = new mongoose.Schema(
 plugins.forEach((plugin) => {
   userSchema.plugin(plugin);
 });
-export default mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+
+export default User;

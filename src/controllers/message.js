@@ -1,17 +1,39 @@
+import Chat from "../models/chat.js";
 import Message from "../models/message.js";
+import User from "../models/user.js";
 import { createMessageSchema } from "../schemas/message.js";
 
 export const createMessage = async (req, res) => {
-  try {
-    const { error } = await createMessageSchema.validate(req.body, {
-      abortEarly: false,
+  const { error } = await createMessageSchema.validate(req.body, {
+    abortEarly: false,
+  });
+  if (error) {
+    return res.status(400).json({
+      error: error.details.map((err) => err.message),
     });
-    if (error) {
-      return res.status(400).json({
-        error: error.details.map((err) => err.message),
-      });
-    }
-    const mess = await Message.create(req.body);
+  }
+  try {
+    var mess = await Message.create(req.body);
+    mess = Message.findOne({ _id: mess._id })
+      .populate(
+        "sender",
+        "information.firstName information.lastName information.avatar_url"
+      )
+      .populate("chat")
+      .lean()
+      .exec();
+    mess = await User.populate(mess, {
+      path: "chat.users",
+      select:
+        "information.firstName information.lastName information.avatar_url email_tel",
+    });
+
+    await Chat.findByIdAndUpdate(req.body.chat, {
+      latestMessage: mess._id,
+    });
+
+    // ---
+
     return res.status(201).json({
       success: true,
       message: "Send message successfully",
@@ -24,23 +46,17 @@ export const createMessage = async (req, res) => {
   }
 };
 export const getMessage = async (req, res) => {
-  const { chatId } = req.params;
   try {
-    const mess = await Message.find({ chatId });
-    if (!mess) {
-      return res.status(400).json({
-        error: true,
-        message: "Get message failed",
-      });
-    }
-    return res.status(201).json({
-      success: true,
-      message: "Get message successfully",
-      mess,
-    });
+    const messages = await Message.find({ chat: req.params.chatId })
+      .populate(
+        "sender",
+        "information.firstName information.lastName information.avatar_url email_tel"
+      )
+      .populate("chat")
+      .lean()
+      .exec();
+    return res.status(200).send(messages);
   } catch (error) {
-    return res.status(400).json({
-      error: error.message,
-    });
+    return res.status(400).send(error.messages);
   }
 };

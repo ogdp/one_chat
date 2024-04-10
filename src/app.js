@@ -7,12 +7,49 @@ import * as path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./configs/database.js";
 import Router from "./routes/index.js";
+import { Server } from "socket.io";
+import http from "http";
 const app = express();
 dotenv.config();
 
 const { PORT, MONGO_URI } = process.env;
 // Khởi tạo kết nối với cơ sở dữ liệu
 connectDB(MONGO_URI);
+
+// Socket.io
+const server = http.createServer(app);
+const io = new Server(server, {
+  pingTimeout: 6000,
+  cors: {
+    "Access-Control-Allow-Origin": "*",
+    origin: "http://localhost:5173",
+    // credentials: true,
+    methods: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log("new connection :: ", socket.id);
+  socket.on("setup", (userData) => {
+    socket.join(userData._id);
+    socket.emit("connected");
+  });
+
+  socket.on("join chat", (room) => {
+    socket.join(room);
+  });
+
+  socket.on("new message", (recievedMessage) => {
+    var chat = recievedMessage.chat;
+    chat.users.forEach((user) => {
+      if (user == recievedMessage.sender._id) return;
+      socket.in(user).emit("message recieved", recievedMessage);
+    });
+  });
+
+  socket.off("setup", () => {
+    socket.leave(userData._id);
+  });
+});
 
 app.use(express.json());
 app.use(bodyParser.json({ limit: "10mb" }));
@@ -44,7 +81,7 @@ app.use((req, res, next) => {
 });
 
 // Required listening Express server
-app.listen(PORT, (req, res) =>
+server.listen(PORT, (req, res) =>
   console.log("Listen server running port " + PORT)
 );
 

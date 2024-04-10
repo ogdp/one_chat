@@ -5,20 +5,15 @@ const plugins = [mongoosePaginate, mongooseDelete];
 
 const messageSchema = new mongoose.Schema(
   {
-    chatId: {
-      type: String,
-      required: true,
-    },
-    senderId: {
-      type: String,
-    },
-    text: {
-      type: String,
-    },
+    sender: { type: mongoose.Types.ObjectId, ref: "User" },
+    content: { type: String, trim: true },
+    chat: { type: mongoose.Types.ObjectId, ref: "Chat" },
+    readBy: [{ type: mongoose.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true, versionKey: false }
 );
 plugins.forEach((plugin) => {
   messageSchema.plugin(plugin);
 });
-export default mongoose.model("Message", messageSchema);
+const Message = mongoose.model("Message", messageSchema);
+export default Message;
