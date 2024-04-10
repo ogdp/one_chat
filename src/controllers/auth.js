@@ -111,8 +111,45 @@ export const signin = async (req, res) => {
 };
 export const logout = async (req, res) => {
   try {
+    const cookieString = req?.headers.cookie;
+    const tokens = {};
+    if (!cookieString)
+      return res.status(401).json({
+        error: true,
+        type: "token",
+        message: "Please log in to continue",
+      });
+    // Phân tích chuỗi cookie thành một mảng các phần
+    cookieString.split(";").forEach((cookie) => {
+      const [key, value] = cookie.trim().split("=");
+      tokens[key] = value;
+    });
+    // const accessToken = tokens["accessToken"] || "";
+    const refreshToken = tokens["refreshToken"] || "";
+
+    // console.log(req.user._id.toString());
+
+    const isMatch = await User.findOne({ _id: req.user._id });
+
+    // Add token new and delete token old
+    const removeTokens = isMatch.refreshToken.filter(
+      (item) => item.token !== refreshToken
+    );
+    await User.findOneAndUpdate(
+      { _id: req.user._id },
+      {
+        refreshToken: removeTokens,
+      },
+      { new: true }
+    );
+
     res.cookie("accessToken", "", { httpOnly: true, maxAge: 1 });
     res.cookie("refreshToken", "", { httpOnly: true, maxAge: 1 });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logout successfully",
+    });
   } catch (error) {
     return res.status(400).json({
       error: true,
