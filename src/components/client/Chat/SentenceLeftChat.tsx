@@ -25,7 +25,7 @@ const SentenceLeftChat = (props: IProps) => {
         </Link>
         <div className="max-w-[65%] bg-slate-100 rounded-md px-4 py-1 pb-3 order-2">
           <div>{props.content}</div>
-          <div className="text-xs text-gray-700 text-right ">
+          <div className="text-xs text-gray-700 text-left">
             {moment(props.time).fromNow()}
           </div>
         </div>

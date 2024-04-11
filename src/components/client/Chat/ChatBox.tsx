@@ -1,15 +1,19 @@
+import { IListMessage, ISender } from "@/interface/chat";
 import ChatInput from "./ChatInput";
 import SentenceLeftChat from "./SentenceLeftChat";
 import SentenceRightChat from "./SentenceRightChat";
+import { IUserPro } from "@/interface/user";
 
 interface IProps {
-  data: any;
+  data: IListMessage[] | any;
+  chatRoom: ISender;
   uid: string;
+  user: IUserPro;
 }
 
-const ChatBox = ({ data, uid }: IProps) => {
-  console.log(data);
-  console.log(uid);
+const ChatBox = ({ data, chatRoom, uid, user }: IProps) => {
+  // console.log(data);
+  // console.log(uid);
   return (
     <>
       <section>
@@ -42,7 +46,7 @@ const ChatBox = ({ data, uid }: IProps) => {
             )
           )}
         </main>
-        <ChatInput />
+        <ChatInput chatRoom={chatRoom} user={user} />
       </section>
     </>
   );

@@ -6,14 +6,6 @@ export const messageApi = createApi({
   tagTypes: ["Message"],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({
-    // getMessages: builder.query({
-    //   query: (chatId: string) => ({
-    //     url: `/messages/${chatId}`,
-    //     method: "GET",
-    //     credentials: "include",
-    //   }),
-    //   providesTags: ["Message"],
-    // }),
     getMessages: builder.mutation({
       query: (chatId: string) => ({
         url: `/messages/${chatId}`,

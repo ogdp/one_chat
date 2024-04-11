@@ -13,16 +13,22 @@ import { io } from "socket.io-client";
 
 const ChatPage = () => {
   const { uid: uidGuest } = useParams();
-  const { data: meData } = useGetMeQuery("me");
+  const { data: meData, isSuccess: isMeSuccess } = useGetMeQuery("me");
   const [createChat, resultCreate] = useCreateChatMutation();
   const [getMess, resultGetMess] = useGetMessagesMutation();
 
   useEffect(() => {
     (async () => {
-      const res = await getSenderChat({ userId: String(uidGuest) });
-      await getMessage(res._id);
+      if (isMeSuccess) {
+        try {
+          const res = await getSenderChat({ userId: String(uidGuest) });
+          await getMessage(res._id);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     })();
-  }, []);
+  }, [isMeSuccess]);
 
   const getSenderChat = async (data: { userId: string }) => {
     try {
@@ -41,14 +47,14 @@ const ChatPage = () => {
     }
   };
 
-  if (resultCreate.isLoading || resultGetMess.isLoading) return <LoadingAll />;
-
   if (
-    resultCreate.status !== "fulfilled" &&
-    resultGetMess.status !== "fulfilled"
+    resultCreate.isLoading ||
+    resultGetMess.isLoading ||
+    (resultCreate.status !== "fulfilled" &&
+      resultGetMess.status !== "fulfilled") ||
+    !resultCreate.isSuccess ||
+    !resultGetMess.isSuccess
   )
-    return <LoadingAll />;
-  if (!resultCreate.isSuccess || !resultGetMess.isSuccess)
     return <LoadingAll />;
 
   // console.log(resultGetMess?.data?.docs);
@@ -59,12 +65,16 @@ const ChatPage = () => {
   //     // setconnectedtosocket(true);
   //   });
   // }
-
   return (
     <>
       <section className="flex min-h-full">
         <div className="w-[70%]">
-          <ChatBox data={resultGetMess?.data?.docs} uid={meData?.user?._id} />
+          <ChatBox
+            data={resultGetMess?.data?.docs}
+            chatRoom={resultCreate?.data}
+            uid={meData?.user?._id}
+            user={meData.user}
+          />
         </div>
         <div className="w-[28%]">
           <ChatBar />
