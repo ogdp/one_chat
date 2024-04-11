@@ -28,17 +28,18 @@ const io = new Server(server, {
   },
 });
 io.on("connection", (socket) => {
-  console.log("new connection :: ", socket.id);
   socket.on("setup", (userData) => {
-    socket.join(userData._id);
+    socket.join(userData?._id);
     socket.emit("connected");
   });
 
   socket.on("join chat", (room) => {
+    // console.log("room", room);
     socket.join(room);
   });
 
   socket.on("new message", (recievedMessage) => {
+    // console.log("message recieved ", recievedMessage);
     var chat = recievedMessage.chat;
     chat.users.forEach((user) => {
       if (user == recievedMessage.sender._id) return;

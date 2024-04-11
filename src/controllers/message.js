@@ -46,35 +46,34 @@ export const createMessage = async (req, res) => {
   }
 };
 export const getMessage = async (req, res) => {
+  // http://localhost:8080/api/messages/6616d5ef0130fd825d37f067?_sort=createdAt&_order=desc
   try {
     const {
       _page = 1,
-      _order = "desc", // asc theo thu tu cu => moi
-      _sort = "createdAt",
+      _order = "asc",
       _limit = 20,
+      _sort = "createdAt",
     } = req.query;
     const options = {
       page: _page,
       limit: _limit,
       sort: {
-        [_sort]: _order == "desc" ? 1 : -1,
+        [_sort]: _order == "desc" ? -1 : 1,
       },
+      populate: [
+        {
+          path: "sender",
+          select:
+            "information.firstName information.lastName information.avatar_url email_tel",
+        },
+        {
+          path: "chat",
+        },
+      ],
     };
     const messages = await Message.paginate(
       { chat: req.params.chatId },
-      {
-        options,
-        populate: [
-          {
-            path: "sender",
-            select:
-              "information.firstName information.lastName information.avatar_url email_tel",
-          },
-          {
-            path: "chat",
-          },
-        ],
-      }
+      options
     );
     return res.status(200).send(messages);
   } catch (error) {
