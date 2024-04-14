@@ -7,12 +7,23 @@ import {
 import { Mutex } from "async-mutex";
 
 // import { logout } from '../features/userSlice';
+// Socket.io
+import { io } from "socket.io-client";
+
+const url = "http://localhost:8080";
+
+let socket: any;
+export const getSocket = () => {
+  socket = io(url);
+  return socket;
+};
+// --
 
 // Create a new mutex
 const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:8080/api",
+  baseUrl: `${url}/api`,
   credentials: "include",
   prepareHeaders: (headers) => {
     return headers;

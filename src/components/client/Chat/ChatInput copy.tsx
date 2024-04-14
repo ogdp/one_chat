@@ -1,12 +1,19 @@
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Space, Upload } from "antd";
+import { Button, Form, Input, Space, Upload, message } from "antd";
+import { useGetMeQuery, usePostMessageMutation } from "@/api";
+import { IListMessage, ISender } from "@/interface/chat";
+import { IUserPro } from "@/interface/user";
+import { ISendMessage } from "@/interface/message";
 import { BsFillSendFill } from "react-icons/bs";
 
 interface IProps {
-  onHandle: (val: any) => void;
+  chatRoom: ISender;
+  user: IUserPro;
 }
 
-const ChatInput = ({ onHandle }: IProps) => {
+const ChatInput = ({ chatRoom, user }: IProps) => {
+  const [postMess, resultMess] = usePostMessageMutation();
+
   const [form] = Form.useForm();
 
   const normFile = (e: any) => {
@@ -17,9 +24,28 @@ const ChatInput = ({ onHandle }: IProps) => {
     return e?.fileList;
   };
 
+  const onHandlePostMess = async (data: ISendMessage) => {
+    try {
+      await postMess(data).unwrap();
+      message.success("Gửi tin nhắn thành công");
+    } catch (error) {
+      message.error("Gửi tin nhắn thất bại");
+      console.log(error);
+    }
+  };
+
   const onFinish = async (values: any) => {
-    form.resetFields();
-    onHandle(values);
+    const dataMessage: ISendMessage = {
+      sender: user?._id,
+      content: values?.content,
+      chat: chatRoom?._id,
+    };
+    try {
+      await onHandlePostMess(dataMessage);
+      form.resetFields();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

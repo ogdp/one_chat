@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import customFetchBase from "./customFetchBase";
+import customFetchBase, { getSocket } from "./customFetchBase";
 
 export const messageApi = createApi({
   reducerPath: "messageApi",
@@ -8,10 +8,20 @@ export const messageApi = createApi({
   endpoints: (builder) => ({
     getMessages: builder.mutation({
       query: (chatId: string) => ({
-        url: `/messages/${chatId}`,
+        url: `/messages/${chatId}?_sort=createdAt&_order=desc&_limit=3`,
         method: "GET",
         credentials: "include",
       }),
+      // async onCacheEntryAdded(
+      //   arg,
+      //   { cacheDataLoaded, cacheEntryRemoved, requestId }
+      // ) {
+      //   try {
+      //     const res = await cacheDataLoaded;
+      //     const socket = await getSocket();
+      //     socket.emit("join chat", arg);
+      //   } catch (error) {}
+      // },
       invalidatesTags: ["Message"],
     }),
     postMessage: builder.mutation({
@@ -21,6 +31,15 @@ export const messageApi = createApi({
         body: data,
         credentials: "include",
       }),
+      async onCacheEntryAdded(arg, { cacheDataLoaded, cacheEntryRemoved }) {
+        try {
+          const res = await cacheDataLoaded;
+          const socket = await getSocket();
+          // console.log(res?.data?.mess?.content);
+          socket.emit("new message", res?.data?.mess);
+        } catch (error) {}
+      },
+
       invalidatesTags: ["Message"],
     }),
   }),
