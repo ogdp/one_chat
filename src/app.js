@@ -29,6 +29,8 @@ const io = new Server(server, {
 });
 io.on("connection", (socket) => {
   socket.on("setup", (userData) => {
+    // Khởi tạo 1 room để và join bằng id user
+    // Để có thể nhận được tất cả sự kiện nếu ai đó gửi đến user như ở dòng dưới cùng
     socket.join(userData?._id);
     socket.emit("connected");
   });
@@ -39,9 +41,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new message", (recievedMessage) => {
-    // console.log("message recieved ", recievedMessage);
-    var chat = recievedMessage.chat;
-    chat.users.forEach((user) => {
+    // Nhận tất cả tin nhắn mới khi gửi đến
+    const { users } = recievedMessage.chat;
+    users.forEach((user) => {
       if (user == recievedMessage.sender._id) return;
       socket.in(user).emit("message recieved", recievedMessage);
     });
