@@ -43,9 +43,9 @@ io.on("connection", (socket) => {
   socket.on("new message", (recievedMessage) => {
     // Nhận tất cả tin nhắn mới khi gửi đến
     const { users } = recievedMessage.chat;
-    users.forEach((user) => {
-      if (user == recievedMessage.sender._id) return;
-      socket.in(user).emit("message recieved", recievedMessage);
+    users.forEach((userId) => {
+      if (userId == recievedMessage.sender._id) return;
+      socket.in(userId).emit("message recieved", recievedMessage);
     });
   });
 
