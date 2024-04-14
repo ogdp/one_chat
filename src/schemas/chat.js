@@ -1,6 +1,13 @@
 import Joi from "joi";
 
 export const createChatSchema = Joi.object({
+  userId: Joi.string().trim().required().messages({
+    "string.trim": "userId cannot be left blank",
+    "string.empty": "userId is required",
+    "any.required": "userId is required",
+  }),
+});
+export const chatScheme = Joi.object({
   chatName: Joi.string().trim().required().messages({
     "string.trim": "chatName content cannot be left blank",
     "string.empty": "chatName is required",

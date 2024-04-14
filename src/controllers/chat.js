@@ -1,11 +1,25 @@
 import { createChatSchema } from "../schemas/chat.js";
 import Chat from "../models/chat.js";
 import User from "../models/user.js";
-import { populate } from "dotenv";
+import mongoose from "mongoose";
 
 export const createChat = async (req, res) => {
   try {
+    const { error } = await createChatSchema.validate(req.body, {
+      abortEarly: false,
+    });
+    if (error) {
+      return res.status(400).json({
+        error: error.details.map((err) => err.message),
+      });
+    }
     const { userId } = req.body;
+    const validId = await mongoose.Types.ObjectId.isValid(userId);
+    if (!validId) {
+      return res.status(400).json({
+        error: "Valid Types.ObjectId 'userId'",
+      });
+    }
     let chat = await Chat.find({
       isGroupChat: false,
       $and: [
@@ -24,7 +38,7 @@ export const createChat = async (req, res) => {
       select:
         "information.firstName information.lastName information.avatar_url email_tel",
     });
-    if (chat != undefined) {
+    if (chat !== undefined) {
       return res.status(200).send(chat);
     } else {
       var chatData = {
