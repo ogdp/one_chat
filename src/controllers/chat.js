@@ -67,7 +67,9 @@ export const getAllChatUser = async (req, res) => {
       populate: [
         {
           path: "users",
-          select: "-password -refreshToken",
+          // Tìm kiếm tất cả loại trừ id của người $ne
+          match: { _id: { $ne: req.user._id } },
+          select: `-password -refreshToken`,
         },
         {
           path: "latestMessage",
