@@ -19,7 +19,7 @@ import {
   useGetMessagesMutation,
   usePostMessageMutation,
 } from "./message";
-import { chatApi, useCreateChatMutation } from "./chat";
+import { chatApi, useCreateChatMutation, useGetAllChatUserQuery } from "./chat";
 
 export {
   authApi,
@@ -37,4 +37,5 @@ export {
   usePostMessageMutation,
   chatApi,
   useCreateChatMutation,
+  useGetAllChatUserQuery,
 };

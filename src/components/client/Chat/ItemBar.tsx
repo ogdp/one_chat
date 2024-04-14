@@ -4,12 +4,13 @@ interface IProps {
   name: string;
   lastChat: string;
   time: string;
+  guestId: string;
 }
 const ItemBar = (props: IProps) => {
   return (
     <>
       <div className="border-b-[1px] border-b-slate-200 px-4 py-2 ">
-        <Link to={"/chat/idday"}>
+        <Link to={`/chat/${props.guestId}`}>
           <span className="font-medium inline-flex items-center gap-x-1 hover:bg-gray-200 text-blue-700">
             {props.name}
             <img

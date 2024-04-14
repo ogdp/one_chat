@@ -24,7 +24,14 @@ export const chatApi = createApi({
       // },
       invalidatesTags: ["Chat"],
     }),
+    getAllChatUser: builder.query({
+      query: () => ({
+        url: "/chats?_sort=updatedAt&_order=desc",
+        credentials: "include",
+      }),
+      providesTags: ["Chat"],
+    }),
   }),
 });
 
-export const { useCreateChatMutation } = chatApi;
+export const { useCreateChatMutation, useGetAllChatUserQuery } = chatApi;

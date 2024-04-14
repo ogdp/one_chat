@@ -11,7 +11,6 @@ interface IProps {
   avatar_url: Array<string>;
 }
 const SentenceLeftChat = (props: IProps) => {
-  console.log(props);
   return (
     <>
       <div className="flex my-2">

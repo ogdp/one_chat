@@ -5,6 +5,7 @@ import { IUserPro } from "@/interface/user";
 import { io } from "socket.io-client";
 import { useGetMessagesMutation } from "@/api";
 import { useEffect, useState } from "react";
+import { Loading } from "@/pages";
 var socket: any;
 interface IProps {
   idRoomChat: string;
@@ -21,6 +22,7 @@ const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
     socket.on("connected", () => {
       // setconnectedtosocket(true);
     });
+
     if (idRoomChat !== undefined) {
       getMess(idRoomChat)
         .unwrap()
@@ -30,7 +32,7 @@ const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
         })
         .catch((error) => console.error("rejected", error));
     }
-  }, []);
+  }, [idRoomChat]);
   socket.on("message recieved", async (newMessage: any) => {
     setListMess((prev: any) => {
       return [...prev, newMessage];
@@ -45,42 +47,42 @@ const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
     }
   }, [nowSend.isSuccess]);
 
-  if (resultGetMess?.isSuccess) {
-    if (listMess !== undefined) {
-      return (
-        <>
-          <main className="overflow-x-hidden overflow-scroll h-[76vh] px-3 pb-8">
-            {listMess.map((item: any, i: string) =>
-              item.sender._id !== user._id ? (
-                <SentenceLeftChat
-                  key={String(i)}
-                  name={
-                    item?.sender.informations?.firstName +
-                    item?.sender.informations?.lastName
-                  }
-                  uid={item?.sender?._id}
-                  content={item?.content}
-                  time={item?.createdAt}
-                  avatar_url={item?.sender?.information?.avatar_url}
-                />
-              ) : (
-                <SentenceRightChat
-                  key={String(i)}
-                  name={
-                    item?.sender.informations?.firstName +
-                    item?.sender.informations?.lastName
-                  }
-                  uid={item?.sender?._id}
-                  content={item?.content}
-                  time={item?.createdAt}
-                  avatar_url={item?.sender?.information?.avatar_url}
-                />
-              )
-            )}
-          </main>
-        </>
-      );
-    }
+  if (resultGetMess?.isSuccess && listMess !== undefined) {
+    return (
+      <>
+        <main className="overflow-x-hidden overflow-scroll h-[76vh] px-3 pb-8">
+          {listMess.map((item: any, i: string) =>
+            item.sender._id !== user._id ? (
+              <SentenceLeftChat
+                key={String(i)}
+                name={
+                  item?.sender.informations?.firstName +
+                  item?.sender.informations?.lastName
+                }
+                uid={item?.sender?._id}
+                content={item?.content}
+                time={item?.createdAt}
+                avatar_url={item?.sender?.information?.avatar_url}
+              />
+            ) : (
+              <SentenceRightChat
+                key={String(i)}
+                name={
+                  item?.sender.informations?.firstName +
+                  item?.sender.informations?.lastName
+                }
+                uid={item?.sender?._id}
+                content={item?.content}
+                time={item?.createdAt}
+                avatar_url={item?.sender?.information?.avatar_url}
+              />
+            )
+          )}
+        </main>
+      </>
+    );
+  } else {
+    return <Loading />;
   }
 };
 
