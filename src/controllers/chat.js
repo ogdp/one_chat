@@ -80,8 +80,6 @@ export const getAllChatUser = async (req, res) => {
         },
       ],
     };
-    console.log(req.user._id);
-
     const chat = await Chat.paginate(
       { users: { $elemMatch: { $eq: req.user._id } } },
       options
