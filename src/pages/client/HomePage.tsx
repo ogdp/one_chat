@@ -1,5 +1,3 @@
-import { FooterC, HeaderC } from "@/components";
-
 const HomePage = () => {
   return (
     <>

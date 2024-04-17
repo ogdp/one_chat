@@ -2,11 +2,9 @@ import { IListMessage } from "@/interface/chat";
 import SentenceLeftChat from "./SentenceLeftChat";
 import SentenceRightChat from "./SentenceRightChat";
 import { IUserPro } from "@/interface/user";
-import { io } from "socket.io-client";
-import { useGetMessagesMutation } from "@/api";
+import { socket, useGetMessagesMutation } from "@/api";
 import { useEffect, useState } from "react";
 import { Loading } from "@/pages";
-var socket: any;
 interface IProps {
   idRoomChat: string;
   user: IUserPro;
@@ -16,13 +14,7 @@ interface IProps {
 const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
   const [listMess, setListMess] = useState<IListMessage | any>(undefined);
   const [getMess, resultGetMess] = useGetMessagesMutation();
-  socket = io("http://localhost:8080");
   useEffect(() => {
-    socket.emit("setup", user);
-    socket.on("connected", () => {
-      // setconnectedtosocket(true);
-    });
-
     if (idRoomChat !== undefined) {
       getMess(idRoomChat)
         .unwrap()
@@ -32,12 +24,14 @@ const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
         })
         .catch((error) => console.error("rejected", error));
     }
-  }, [idRoomChat]);
-  socket.on("message recieved", async (newMessage: any) => {
-    setListMess((prev: any) => {
-      return [...prev, newMessage];
+  }, []);
+  useEffect(() => {
+    socket.on("message new in room", async (newMessage: any) => {
+      setListMess((prev: any) => {
+        return [...prev, newMessage];
+      });
     });
-  });
+  }, []);
 
   useEffect(() => {
     if (listMess !== undefined && nowSend?.data?.mess !== undefined) {
@@ -45,9 +39,11 @@ const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
         return [...prev, nowSend?.data?.mess];
       });
     }
-  }, [nowSend.isSuccess]);
+  }, [nowSend.isSuccess, idRoomChat]);
 
-  if (resultGetMess?.isSuccess && listMess !== undefined) {
+  if (resultGetMess.isSuccess && listMess !== undefined) {
+    // console.log("ChatBoxx");
+    // console.log("ChatBox idRoomChat :: ", idRoomChat);
     return (
       <>
         <main className="overflow-x-hidden overflow-scroll h-[76vh] px-3 pb-8">

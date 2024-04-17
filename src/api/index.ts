@@ -21,6 +21,7 @@ import {
 } from "./message";
 import { chatApi, useCreateChatMutation, useGetAllChatUserQuery } from "./chat";
 
+import customFetchBase, { socket } from "./customFetchBase";
 export {
   authApi,
   useSiginAccountMutation,
@@ -38,4 +39,6 @@ export {
   chatApi,
   useCreateChatMutation,
   useGetAllChatUserQuery,
+  socket,
+  customFetchBase,
 };

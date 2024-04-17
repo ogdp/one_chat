@@ -10,6 +10,7 @@ const ResultSearchUser = () => {
   const { data: meData, isLoading: isMeLoading } = useGetMeQuery("me");
 
   if (isLoading || isMeLoading) return <LoadingAll />;
+  console.log(data.user.docs);
   return (
     <>
       <section className="px-3 py-2 max-w-[50%] m-auto">
@@ -17,9 +18,9 @@ const ResultSearchUser = () => {
           Kết quả tìm kiếm dành cho : <span className="font-medium">{key}</span>
         </h3>
         <div>
-          {data?.user.totalDocs > 0 &&
-            data.user.docs.map(
-              (item: any) =>
+          {data?.user?.totalDocs > 0 &&
+            data.user.docs.map((item: any) => {
+              return (
                 item._id !== meData?.user?._id && (
                   <SearchCard
                     key={item._id}
@@ -32,7 +33,8 @@ const ResultSearchUser = () => {
                     avatar_url={item.information.avatar_url}
                   />
                 )
-            )}
+              );
+            })}
         </div>
       </section>
     </>

@@ -1,3 +1,4 @@
+import { IUserPro } from "@/interface/user";
 import {
   BaseQueryFn,
   FetchArgs,
@@ -12,9 +13,13 @@ import { io } from "socket.io-client";
 
 const url = "http://localhost:8080";
 
-let socket: any;
-export const getSocket = () => {
+export let socket: any;
+const getSocket = (user: IUserPro) => {
   socket = io(url);
+  socket.emit("setup", user);
+  socket.on("connected", () => {
+    // setconnectedtosocket(true);
+  });
   return socket;
 };
 // --
@@ -38,6 +43,9 @@ const customFetchBase: BaseQueryFn<
   // wait until the mutex is available without locking it
   await mutex.waitForUnlock();
   let result: any = await baseQuery(args, api, extraOptions);
+  if (result?.data?.message == "Get user information successfully.") {
+    await getSocket(result?.data?.user);
+  }
   if (result?.error?.data?.type === "token") {
     // console.log("Kiểu Token");
     // console.log(result?.error?.data);

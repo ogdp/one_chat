@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import customFetchBase, { getSocket } from "./customFetchBase";
+import { customFetchBase, socket } from "@/api";
 
 export const messageApi = createApi({
   reducerPath: "messageApi",
@@ -34,7 +34,6 @@ export const messageApi = createApi({
       async onCacheEntryAdded(arg, { cacheDataLoaded, cacheEntryRemoved }) {
         try {
           const res = await cacheDataLoaded;
-          const socket = await getSocket();
           // console.log(res?.data?.mess?.content);
           socket.emit("new message", res?.data?.mess);
         } catch (error) {}

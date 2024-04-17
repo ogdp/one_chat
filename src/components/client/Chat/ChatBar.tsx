@@ -1,4 +1,4 @@
-import { useGetAllChatUserQuery } from "@/api";
+import { socket, useGetAllChatUserQuery } from "@/api";
 import ItemBar from "./ItemBar";
 import SearchBox from "./SearchBox";
 import { useEffect, useState } from "react";
@@ -6,13 +6,29 @@ import moment from "moment";
 import "moment/dist/locale/vi";
 moment.locale("vi");
 
-const ChatBar = () => {
-  const { data, isSuccess } = useGetAllChatUserQuery("");
+interface IProps {
+  onSwitchChat: (room: any) => void;
+  refreshBars: boolean;
+}
+const ChatBar = (props: IProps) => {
+  const { data, isSuccess, refetch } = useGetAllChatUserQuery("");
   const [listChat, setListChat] = useState<any>(undefined);
 
   useEffect(() => {
     if (isSuccess) setListChat(data?.docs);
   }, [isSuccess]);
+  useEffect(() => {
+    socket.on("message recieved", async (mess: any) => {
+      await reCall();
+    });
+    (async () => {
+      await reCall();
+    })();
+  }, [props.refreshBars]);
+  const reCall = async () => {
+    const res = await refetch();
+    setListChat(res?.data?.docs);
+  };
   if (isSuccess && listChat !== undefined) {
     return (
       <>
@@ -23,6 +39,7 @@ const ChatBar = () => {
               return (
                 <div key={i}>
                   <ItemBar
+                    onSwitchChat={props.onSwitchChat}
                     guestId={item?.users[0]?._id ? item?.users[0]?._id : ""}
                     name={
                       item?.users[0]?.information !== undefined
