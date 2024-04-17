@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join chat", (room) => {
-    // console.log("room", room);
+    // console.log("Client joined room:", room);
     socket.join(room);
   });
 
@@ -47,6 +47,15 @@ io.on("connection", (socket) => {
       if (userId == recievedMessage.sender._id) return;
       socket.in(userId).emit("message recieved", recievedMessage);
     });
+    // Send new message to room
+    socket
+      .in(recievedMessage.chat._id)
+      .emit("message new in room", recievedMessage);
+  });
+
+  // Roi khoi room chat
+  socket.on("leaveRoom", function (room) {
+    this.leave(room);
   });
 
   socket.off("setup", () => {

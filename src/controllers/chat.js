@@ -14,6 +14,13 @@ export const createChat = async (req, res) => {
       });
     }
     const { userId } = req.body;
+
+    if (userId == new Object(req.user._id).toString()) {
+      return res.status(400).json({
+        error: true,
+        message: "user Id and req.user_id are the same",
+      });
+    }
     const validId = await mongoose.Types.ObjectId.isValid(userId);
     if (!validId) {
       return res.status(400).json({
