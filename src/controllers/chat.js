@@ -112,3 +112,59 @@ export const getAllChatUser = async (req, res) => {
     return res.status(400).send(error.message);
   }
 };
+
+export const searchChat = async (req, res) => {
+  try {
+    // {{host}}/api/chats/search?key=duc?_sort=updatedAt&_order=desc
+    const {
+      _page = 1,
+      _order = "asc",
+      _limit = 20,
+      _sort = "updatedAt",
+    } = req.query;
+    const options = {
+      page: _page,
+      limit: _limit,
+      sort: {
+        [_sort]: _order == "desc" ? -1 : 1,
+      },
+      populate: [
+        {
+          path: "users",
+          match: {
+            // Tìm kiếm tất cả loại trừ id của người $ne
+            _id: { $ne: req.user._id },
+            // Hoặc có lastName hoặc có firstName giống key cần tìm
+            $or: [
+              { "information.lastName": new RegExp(req.query.key, "i") },
+              { "information.firstName": new RegExp(req.query.key, "i") },
+            ],
+          },
+          select: `-password -refreshToken`,
+        },
+        {
+          path: "latestMessage",
+          populate: [
+            {
+              path: "sender",
+              select: "-password -refreshToken",
+            },
+          ],
+        },
+      ],
+    };
+    await Chat.paginate(
+      {
+        users: { $elemMatch: { $eq: req.user._id } },
+      },
+      options
+    ).then(function (result) {
+      const filteredDocs = result.docs.filter((doc) => doc.users.length > 0);
+      result.docs = filteredDocs;
+      result.totalDocs = filteredDocs.length;
+      return res.status(200).send(result);
+    });
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+};
