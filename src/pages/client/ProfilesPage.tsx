@@ -1,4 +1,5 @@
 import { useGetGuestQuery, useGetMeQuery } from "@/api";
+import { UpdateUser } from "@/components";
 import InfoUserTop from "@/components/client/InfoUserTop";
 import { LoadingAll } from "@/pages";
 import { SmileOutlined } from "@ant-design/icons";
@@ -84,6 +85,7 @@ const ProfilesPage = () => {
                 avatar_url={avatar_url}
               />
             }
+            <UpdateUser />
           </section>
         </>
       );
