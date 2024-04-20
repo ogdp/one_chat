@@ -1,9 +1,10 @@
-import { socket, useGetAllChatUserQuery } from "@/api";
+import { socket, useGetAllChatUserQuery, useSearchChatMutation } from "@/api";
 import ItemBar from "./ItemBar";
 import SearchBox from "./SearchBox";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment/dist/locale/vi";
+import { message } from "antd";
 moment.locale("vi");
 
 interface IProps {
@@ -12,6 +13,7 @@ interface IProps {
 }
 const ChatBar = (props: IProps) => {
   const { data, isSuccess, refetch } = useGetAllChatUserQuery("");
+  const [searchChat, resultSearchChat] = useSearchChatMutation();
   const [listChat, setListChat] = useState<any>(undefined);
 
   useEffect(() => {
@@ -29,11 +31,32 @@ const ChatBar = (props: IProps) => {
     const res = await refetch();
     setListChat(res?.data?.docs);
   };
+
+  // Searching
+  const onHandleSearch = (key: string) => {
+    if (key !== "") {
+      searchChat(key)
+        .unwrap()
+        .then((res) => {
+          if (res.totalDocs == 0) {
+            message.info("Không tìm thấy người dùng");
+            // setListChat(data?.docs);
+          } else {
+            setListChat(res?.docs);
+          }
+        })
+        .catch((err) => console.log(err));
+    } else {
+      reCall();
+    }
+  };
+  console.log(data?.docs);
+
   if (isSuccess && listChat !== undefined) {
     return (
       <>
         <section className="border-l-[1px] border-l-slate-200 h-full">
-          <SearchBox />
+          <SearchBox onHandle={onHandleSearch} />
           <div className="overflow-x-hidden overflow-scroll h-[82vh]">
             {listChat?.map((item: any, i: string) => {
               return (

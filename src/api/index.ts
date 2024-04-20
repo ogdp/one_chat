@@ -19,7 +19,12 @@ import {
   useGetMessagesMutation,
   usePostMessageMutation,
 } from "./message";
-import { chatApi, useCreateChatMutation, useGetAllChatUserQuery } from "./chat";
+import {
+  chatApi,
+  useCreateChatMutation,
+  useGetAllChatUserQuery,
+  useSearchChatMutation,
+} from "./chat";
 
 import customFetchBase, { socket } from "./customFetchBase";
 export {
@@ -39,6 +44,7 @@ export {
   chatApi,
   useCreateChatMutation,
   useGetAllChatUserQuery,
+  useSearchChatMutation,
   socket,
   customFetchBase,
 };

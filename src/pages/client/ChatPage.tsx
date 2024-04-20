@@ -1,26 +1,26 @@
-import ChatBar from "@/components/client/Chat/ChatBar";
-import ChatBox from "@/components/client/Chat/ChatBox";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Avatar, Space } from "antd";
+import { HiDotsCircleHorizontal } from "react-icons/hi";
 import {
   socket,
   useCreateChatMutation,
   useGetMeQuery,
   usePostMessageMutation,
 } from "@/api";
-import { useEffect, useState } from "react";
-import ChatInput from "@/components/client/Chat/ChatInput";
 import { ISendMessage } from "@/interface/message";
-import { HiDotsCircleHorizontal } from "react-icons/hi";
-import { Avatar, Space } from "antd";
+import ChatBar from "@/components/client/Chat/ChatBar";
+import ChatBox from "@/components/client/Chat/ChatBox";
+import ChatInput from "@/components/client/Chat/ChatInput";
 
 const ChatPage = () => {
-  let location = useLocation();
   const navigate = useNavigate();
-  const [idRoomChat, setIdRoomChat] = useState<string | undefined>(undefined);
-  const [postMess, resultMess] = usePostMessageMutation<any>();
-  const { data: meData, isSuccess: isMeSuccess } = useGetMeQuery("me");
   const { uid: uidGuest } = useParams();
-  const [createChat, resultCreateChat] = useCreateChatMutation<any>();
+  const location = useLocation();
+  const { data: meData, isSuccess: isMeSuccess } = useGetMeQuery("me");
+  const [postMess, resultMess] = usePostMessageMutation();
+  const [createChat, resultCreateChat] = useCreateChatMutation();
+  const [idRoomChat, setIdRoomChat] = useState<string | undefined>(undefined);
   const [guest, setGuest] = useState<any>(undefined);
   const [showDisplay, setShowDisplay] = useState<boolean>(false);
   const [refreshBars, setRefreshBars] = useState<boolean>(false);
@@ -33,18 +33,15 @@ const ChatPage = () => {
         .unwrap()
         .then((res) => {
           setShowDisplay(true);
-          // console.log("res?._id", res?._id);
           setIdRoomChat(res?._id);
           socket.emit("join chat", res?._id);
-          setGuest(res.users.filter((user: any) => user?._id == uidGuest)[0]);
+          setGuest(res.users.find((user: any) => user?._id === uidGuest));
         })
-        .catch((error) => (window.location.href = "/chat"));
-    } else {
-      if (uidGuest == undefined && meData?.user?._id !== undefined) {
-        setShowDisplay(true);
-      }
+        .catch(() => (window.location.href = "/chat"));
+    } else if (uidGuest === undefined && meData?.user?._id !== undefined) {
+      setShowDisplay(true);
     }
-  }, [isMeSuccess, location]);
+  }, [isMeSuccess, location, uidGuest, createChat, meData]);
 
   const onSendingMessage = (data: any) => {
     const dataMessage: ISendMessage = {
@@ -54,61 +51,58 @@ const ChatPage = () => {
     };
     postMess(dataMessage)
       .unwrap()
-      .then((res) => {
-        res;
-        setRefreshBars(!refreshBars);
-      })
-      .catch((err) => console.log(err));
+      .then(() => setRefreshBars(!refreshBars))
+      .catch(console.error);
   };
+
   const onSwitchChat = (idChat: string) => {
     socket.emit("leaveRoom", idRoomChat);
     navigate(`/chat/${idChat}`);
   };
-  if (showDisplay) {
-    return (
-      <>
-        <section className="flex min-h-full">
-          <div className="w-[72%]">
-            {resultCreateChat.isSuccess &&
-              idRoomChat !== undefined &&
-              guest !== undefined && (
-                <>
-                  <div className="w-full flex px-8 py-3 border-b-[1px] border-b-gray-400 justify-between text-blue-700">
-                    <div className="flex gap-x-3">
-                      <Space size={16} wrap>
-                        <Avatar
-                          className="cursor-pointer bg-red-400"
-                          src={guest?.information?.avatar_url[0]}
-                        />
-                      </Space>
-                      <Link to={`/profiles?id=${guest?._id}`}>
-                        <h1 className="font-bold text-xl ">
-                          {guest?.information?.firstName +
-                            guest?.information?.lastName}
-                        </h1>
-                      </Link>
-                    </div>
 
-                    <div>
-                      <HiDotsCircleHorizontal size={"30px"} />
-                    </div>
-                  </div>
-                  <ChatBox
-                    idRoomChat={String(idRoomChat)}
-                    user={meData.user}
-                    nowSend={resultMess}
-                  />{" "}
-                  <ChatInput onHandle={onSendingMessage} />
-                </>
-              )}
-          </div>
-          <div className="w-[28%]">
-            <ChatBar onSwitchChat={onSwitchChat} refreshBars={refreshBars} />
-          </div>
-        </section>
-      </>
-    );
-  }
+  if (!showDisplay) return null;
+  return (
+    <section className="flex min-h-full">
+      <div className="w-[72%]">
+        {resultCreateChat.isSuccess &&
+          idRoomChat !== undefined &&
+          guest !== undefined && (
+            <>
+              <div className="w-full flex px-8 py-3 border-b-[1px] border-b-gray-400 justify-between text-blue-700">
+                <div className="flex gap-x-3">
+                  <Space size={16} wrap>
+                    <Avatar
+                      className="cursor-pointer bg-red-400"
+                      src={guest?.information?.avatar_url[0]}
+                    />
+                  </Space>
+                  <Link to={`/profiles?id=${guest?._id}`}>
+                    <h1 className="font-bold text-xl ">
+                      {guest?.information?.firstName +
+                        " " +
+                        guest?.information?.lastName}
+                    </h1>
+                  </Link>
+                </div>
+
+                <div>
+                  <HiDotsCircleHorizontal size={"30px"} />
+                </div>
+              </div>
+              <ChatBox
+                idRoomChat={String(idRoomChat)}
+                user={meData.user}
+                nowSend={resultMess}
+              />
+              <ChatInput onHandle={onSendingMessage} />
+            </>
+          )}
+      </div>
+      <div className="w-[28%]">
+        <ChatBar onSwitchChat={onSwitchChat} refreshBars={refreshBars} />
+      </div>
+    </section>
+  );
 };
 
 export default ChatPage;

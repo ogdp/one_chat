@@ -32,7 +32,19 @@ export const chatApi = createApi({
       }),
       providesTags: ["Chat"],
     }),
+    searchChat: builder.mutation({
+      query: (key) => ({
+        url: `/chats/search?key=${key}&_sort=updatedAt&_order=desc`,
+        method: "GET",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Chat"],
+    }),
   }),
 });
 
-export const { useCreateChatMutation, useGetAllChatUserQuery } = chatApi;
+export const {
+  useCreateChatMutation,
+  useGetAllChatUserQuery,
+  useSearchChatMutation,
+} = chatApi;
