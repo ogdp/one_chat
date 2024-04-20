@@ -115,7 +115,7 @@ export const getAllChatUser = async (req, res) => {
 
 export const searchChat = async (req, res) => {
   try {
-    // {{host}}/api/chats/search?key=duc?_sort=updatedAt&_order=desc
+    // {{host}}/api/chats/search?key=duc&_sort=updatedAt&_order=desc
     const {
       _page = 1,
       _order = "asc",
