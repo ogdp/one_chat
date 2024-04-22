@@ -18,17 +18,17 @@ interface Information {
   lastName: string;
   dateOfBirth: string;
   gender: string;
-  location: string;
-  province: string;
-  avatar_url: string[];
-  _id: string;
+  location?: string;
+  province?: string;
+  avatar_url?: string[];
+  _id?: string;
 }
 
 export interface IUpdateUser {
   _id?: string;
   email_tel: string;
-  active_status: string;
-  role: string;
+  active_status?: string;
+  role?: string;
   information: Information2;
   password: string;
 }

@@ -9,18 +9,24 @@ import {
   Image,
   UploadProps,
   UploadFile,
-  GetProp,
 } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useGetMeQuery, useSiginupAccountMutation } from "@/api";
+import { useGetMeQuery, useUpdateUserMutation } from "@/api";
 import { LoadingAll } from "@/pages";
 import { PlusOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useGetLocationQuery } from "@/api";
 
 dayjs.extend(customParseFormat);
 const UpdateUser = () => {
-  const [signup, resultSignup] = useSiginupAccountMutation();
+  const [updateUser, resultUpdateUser] = useUpdateUserMutation();
+  const {
+    data: location,
+    refetch,
+    isFetching,
+    isSuccess: isSuccessLoca,
+  } = useGetLocationQuery("");
   const [form] = Form.useForm();
   const { data, isSuccess } = useGetMeQuery("me");
   const dateFormat = "YYYY-MM-DD";
@@ -33,29 +39,41 @@ const UpdateUser = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [avatarFileSend, setAvatarFileSend] = useState<File | any>();
   // ---
-  const onFinish = async (values: any) => {
+
+  if (!data.success || !isSuccess || !isSuccessLoca) {
+    return null;
+  }
+  const { user } = data;
+  console.log("location ", location);
+
+  const onFinish = async (informationOld: any) => {
+    informationOld.dateOfBirth = dayjs(
+      String(informationOld.dateOfBirth.$d)
+    ).format("YYYY-MM-DDTHH:mm:ssZ[Z]");
+    const { password, ...information } = informationOld;
+    const sendData = { ...user, information };
+    sendData.password = password;
+
     try {
-      const data = {
-        email_tel: values.email_tel,
-        information: {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          dateOfBirth: dayjs(String(values.dateOfBirth.$d)).format(
-            "YYYY-MM-DD"
-          ),
-          gender: values.gender,
-          avatar_url: [
-            "https://res.cloudinary.com/minhduc/image/upload/v1710836772/one_chat_db/ayczza4wipygfvepvrup.png",
-          ],
-        },
-        password: values.password,
-        confirmPassword: values.confirmPassword,
-      };
-      const res = await signup(data).unwrap();
-      await message.success(res.message);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      // console.log(values);
+      // const data = {
+      //   email_tel: values.email_tel,
+      //   information: {
+      //     firstName: values.firstName,
+      //     lastName: values.lastName,
+      // dateOfBirth: dayjs(String(values.dateOfBirth.$d)).format(
+      //   "YYYY-MM-DD"
+      // ),
+      //     gender: values.gender,
+      //     avatar_url: [
+      //       "https://res.cloudinary.com/minhduc/image/upload/v1710836772/one_chat_db/ayczza4wipygfvepvrup.png",
+      //     ],
+      //   },
+      //   password: values.password,
+      //   confirmPassword: values.confirmPassword,
+      // };
+      // const res = await updateUser(data).unwrap();
+      // await message.success(res.message);
     } catch (error: any) {
       console.error("Sign-in error:", error);
       if (error?.data?.error) {
@@ -67,9 +85,6 @@ const UpdateUser = () => {
       }
     }
   };
-
-  if (!data.success) null;
-  const { user } = data;
 
   //   Upload image
   const convertImageToBase64 = (file: any) => {
@@ -116,7 +131,7 @@ const UpdateUser = () => {
   //   ----
   return (
     <>
-      {resultSignup.isLoading && <LoadingAll />}
+      {resultUpdateUser.isLoading && <LoadingAll />}
       <section className="w-full flex justify-center items-center pt-10">
         <main
           style={{

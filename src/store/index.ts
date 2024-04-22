@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { authApi, messageApi, userApi, chatApi } from "@/api";
+import { authApi, messageApi, userApi, chatApi, locationApi } from "@/api";
 
 export const store = configureStore({
   reducer: {
@@ -7,12 +7,14 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [messageApi.reducerPath]: messageApi.reducer,
     [chatApi.reducerPath]: chatApi.reducer,
+    [locationApi.reducerPath]: locationApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({}).concat(
       authApi.middleware,
       userApi.middleware,
       messageApi.middleware,
-      chatApi.middleware
+      chatApi.middleware,
+      locationApi.middleware
     ),
 });

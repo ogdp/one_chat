@@ -25,6 +25,7 @@ import {
   useGetAllChatUserQuery,
   useSearchChatMutation,
 } from "./chat";
+import { locationApi, useGetLocationQuery } from "./location";
 
 import customFetchBase, { socket } from "./customFetchBase";
 export {
@@ -47,4 +48,6 @@ export {
   useSearchChatMutation,
   socket,
   customFetchBase,
+  locationApi,
+  useGetLocationQuery,
 };
