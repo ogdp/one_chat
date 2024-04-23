@@ -1,5 +1,6 @@
-```markdown
-# Website Nhắn Tin trò chuyện
+<!-- ```markdown -->
+
+# OneChat - Nhắn tin trò chuyện
 
 Đây là một website nhắn tin thời gian thực được xây dựng bằng các công nghệ web hiện đại. Nó cho phép người dùng tham gia vào các cuộc trò chuyện nhắn tin tức thời với nhau. Dự án này thể hiện việc sử dụng React, Redux Toolkit, Ant Design, Tailwind CSS, TypeScript, Node.js, Express.js, Socket.IO, JWT và Bcrypt.
 
@@ -16,9 +17,9 @@
 ## Hình ảnh
 
 ![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/wk9jor09vogogylf1orr.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/zylks4mibhzry0b3dtsz.png)
 ![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/an49qfguhwrlikoeahfc.png)
 ![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/h3zfolnm3x5nwreqzdtb.png)
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/zylks4mibhzry0b3dtsz.png)
 
 ## Cài đặt
 
@@ -40,4 +41,5 @@ Mọi đóng góp đều được hoan nghênh! Nếu bạn phát hiện bất k
 ## Giấy phép
 
 Dự án này được cấp phép theo [Giấy phép MIT](LICENSE).
-```
+
+<!-- ``` -->
