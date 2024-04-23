@@ -128,6 +128,7 @@ export const create = async (req, res) => {
 };
 export const update = async (req, res) => {
   try {
+    const uid = new Object(req.user._id).toString();
     const { error } = await userSchema.validate(req.body, {
       abortEarly: false,
     });
@@ -136,7 +137,7 @@ export const update = async (req, res) => {
         error: error.details.map((err) => err.message),
       });
     }
-    const user = await User.findById(req.uid);
+    const user = await User.findById(uid);
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
       return res.status(400).json({
@@ -145,11 +146,9 @@ export const update = async (req, res) => {
       });
     }
     delete req.body.password;
-    const userUpdate = await User.findByIdAndUpdate(
-      { _id: req.uid },
-      req.body,
-      { new: true }
-    );
+    const userUpdate = await User.findByIdAndUpdate({ _id: uid }, req.body, {
+      new: true,
+    });
     userUpdate.password = undefined;
     userUpdate.refreshToken = undefined;
     return res.status(200).json({

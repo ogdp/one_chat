@@ -24,12 +24,12 @@ const informationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  location: {
+  province: {
     type: String,
     minLength: 3,
     maxLength: 32,
   },
-  province: {
+  district: {
     type: String,
     minLength: 3,
     maxLength: 32,

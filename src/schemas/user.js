@@ -74,8 +74,8 @@ export const userSchema = Joi.object({
     "string.trim": "Email or Phone number is required field",
     "string.empty": "Email or Phone number is required field",
   }),
-  active_status: Joi.string().required(),
-  role: Joi.string().required(),
+  active_status: Joi.string(),
+  role: Joi.string(),
   information: Joi.object({
     firstName: Joi.string()
       .required()
@@ -101,25 +101,25 @@ export const userSchema = Joi.object({
         "string.empty": "Last name cannot be empty",
         "any.required": "Last name is required",
       }),
-    dateOfBirth: Joi.date().iso().required().messages({
+    dateOfBirth: Joi.date().required().messages({
       "date.base": "Date of birth must be a valid date",
       "date.empty": "Date of birth must not be empty",
       "any.required": "Date of birth is a required field",
     }),
     gender: Joi.string().valid("male", "female").required(),
-    location: Joi.string().trim().min(2).max(32).required().messages({
-      "string.trim": "Location must not contain spaces",
-      "string.empty": "Location is required",
-      "string.min": "Location must be at least {#limit} characters long",
-      "string.max": "Location must be at most {#limit} characters long",
-      "any.required": "Location is required",
-    }),
-    province: Joi.string().trim().min(2).max(32).required().messages({
+    province: Joi.string().trim().min(2).max(32).messages({
       "string.trim": "Province must not contain spaces",
       "string.empty": "Province is required",
       "string.min": "Province must be at least {#limit} characters long",
       "string.max": "Province must be at most {#limit} characters long",
       "any.required": "Province is required",
+    }),
+    district: Joi.string().trim().min(2).max(32).messages({
+      "string.trim": "District must not contain spaces",
+      "string.empty": "District is required",
+      "string.min": "District must be at least {#limit} characters long",
+      "string.max": "District must be at most {#limit} characters long",
+      "any.required": "District is required",
     }),
     avatar_url: Joi.array().items(Joi.string()), // Giả sử là một mảng các URL avatar
   }).required(),
