@@ -6,14 +6,12 @@ const { Search } = Input;
 
 const SearchUser = () => {
   const navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
   const keyw = searchParams.get("key") == null ? "" : searchParams.get("key");
   const [trigger, {}] = useLazySearchUserQuery();
-  let key = "";
   const onSearch = async (values?: string | "") => {
-    const data = await trigger(String(values));
+    await trigger(String(values));
     navigate(`/search/top?key=${values}`);
-    key = String(values);
   };
   return (
     <>

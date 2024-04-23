@@ -10,13 +10,12 @@ interface IProps {
 
 const SearchCard = (props: IProps) => {
   const navigate = useNavigate();
-  const [createChat, resultCreate] = useCreateChatMutation();
+  const [createChat] = useCreateChatMutation();
 
   const onHandleChat = async (uid: string) => {
     createChat({ userId: uid })
       .unwrap()
-      .then((response) => {
-        // console.log(response);
+      .then(() => {
         navigate(`/chat/${uid}`);
       })
       .catch((error) => {

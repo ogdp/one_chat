@@ -11,7 +11,7 @@ interface IProps {
 
 const UserDrawerPanel = ({ user, toggle }: IProps) => {
   const navigate = useNavigate();
-  const [logout, resultLogout] = useLogoutAccountMutation();
+  const [logout] = useLogoutAccountMutation();
   const onHandleLogout = () => {
     logout("")
       .unwrap()

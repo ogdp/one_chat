@@ -12,16 +12,6 @@ export const messageApi = createApi({
         method: "GET",
         credentials: "include",
       }),
-      // async onCacheEntryAdded(
-      //   arg,
-      //   { cacheDataLoaded, cacheEntryRemoved, requestId }
-      // ) {
-      //   try {
-      //     const res = await cacheDataLoaded;
-      //     const socket = await getSocket();
-      //     socket.emit("join chat", arg);
-      //   } catch (error) {}
-      // },
       invalidatesTags: ["Message"],
     }),
     postMessage: builder.mutation({
@@ -33,8 +23,8 @@ export const messageApi = createApi({
       }),
       async onCacheEntryAdded(arg, { cacheDataLoaded, cacheEntryRemoved }) {
         try {
+          String(cacheEntryRemoved + arg);
           const res = await cacheDataLoaded;
-          // console.log(res?.data?.mess?.content);
           socket.emit("new message", res?.data?.mess);
         } catch (error) {}
       },

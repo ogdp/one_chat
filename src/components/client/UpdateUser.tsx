@@ -29,7 +29,7 @@ import "@/css/UpdateUser.css";
 dayjs.extend(customParseFormat);
 const UpdateUser = () => {
   const [updateUser, resultUpdateUser] = useUpdateUserMutation();
-  const [getLocation, resultLocation] = useGetLocationMutation();
+  const [getLocation] = useGetLocationMutation();
   const [uploadImage, resultUploadImage] = useUploadImagesMutation();
   const [form] = Form.useForm();
   const { data: meData, isSuccess } = useGetMeQuery<any>("me");
@@ -140,7 +140,7 @@ const UpdateUser = () => {
 
           if (typeof value === "object" && value !== null) {
             value = Object.fromEntries(
-              Object.entries(value as DataObject).filter(([key, value]) => {
+              Object.entries(value as DataObject).filter(([key]) => {
                 const informationKeyToRemove = `"information.${key}"`;
                 return !objectToRemove.includes(informationKeyToRemove);
               })
@@ -168,7 +168,6 @@ const UpdateUser = () => {
             } else {
               message.success("Cập nhật thông tin thành công");
             }
-            console.log(res);
           })
           .catch((error) => console.log(error));
       })
@@ -417,7 +416,7 @@ const UpdateUser = () => {
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
-                customRequest={({ onSuccess }) => false}
+                customRequest={() => false}
                 accept="image/*"
               >
                 {fileList.length >= 8 ? null : uploadButton}

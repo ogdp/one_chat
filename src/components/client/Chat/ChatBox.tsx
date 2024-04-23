@@ -42,8 +42,6 @@ const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
   }, [nowSend.isSuccess, idRoomChat]);
 
   if (resultGetMess.isSuccess && listMess !== undefined) {
-    // console.log("ChatBoxx");
-    // console.log("ChatBox idRoomChat :: ", idRoomChat);
     return (
       <>
         <main className="overflow-x-hidden overflow-scroll h-[76vh] px-3 pb-8">

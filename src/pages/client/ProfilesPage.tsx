@@ -8,7 +8,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 
 const ProfilesPage = () => {
   const navigate = useNavigate();
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
   const uid = searchParams.get("id");
   if (uid) {
     const { data, isLoading } = useGetGuestQuery(String(uid));

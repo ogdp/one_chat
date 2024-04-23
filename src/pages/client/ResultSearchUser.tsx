@@ -1,16 +1,14 @@
 import { useGetMeQuery, useSearchUserQuery } from "@/api/user";
 import SearchCard from "@/components/client/SearchCard";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { LoadingAll } from "..";
 
 const ResultSearchUser = () => {
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
   const key = String(searchParams.get("key"));
   const { data, isLoading } = useSearchUserQuery(key);
   const { data: meData, isLoading: isMeLoading } = useGetMeQuery("me");
-
   if (isLoading || isMeLoading) return <LoadingAll />;
-  console.log(data.user.docs);
   return (
     <>
       <section className="px-3 py-2 max-w-[50%] m-auto">

@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import customFetchBase, { socket } from "./customFetchBase";
+import customFetchBase from "./customFetchBase";
 
 export const chatApi = createApi({
   reducerPath: "chatApi",
@@ -15,12 +15,8 @@ export const chatApi = createApi({
       }),
       async onCacheEntryAdded(arg, { cacheDataLoaded, cacheEntryRemoved }) {
         try {
-          const res = await cacheDataLoaded;
-          // const socket = await getSocket();
-          // console.log(res.data);
-          // console.log(socket);
-          // console.log(res.data._id);
-          // socket.emit("join room", res.data._id);
+          String(cacheEntryRemoved + arg);
+          await cacheDataLoaded;
         } catch (error) {}
       },
       invalidatesTags: ["Chat"],

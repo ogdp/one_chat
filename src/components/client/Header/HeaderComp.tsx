@@ -4,22 +4,10 @@ import { useState } from "react";
 import UserDrawerPanel from "@/components/auth/UserDrawerPanel";
 import SearchUser from "./SearchUser";
 import { useGetMeQuery } from "@/api";
-// import { io } from "socket.io-client";
-// var socket;
 
 const HeaderComp = () => {
   const [togglePanel, setTogglePanel] = useState<boolean>(false);
-  const { data, isLoading, isSuccess } = useGetMeQuery("me");
-
-  // socket = io("http://localhost:8080");
-  // socket.emit("setup", data?.user);
-  // socket.on("connected", () => {
-  //   // setconnectedtosocket(true);
-  // });
-  // socket.on("message recieved", async (newMessage: any) => {
-  //   console.log("message recieved", newMessage);
-  // });
-
+  const { data, isSuccess } = useGetMeQuery("me");
   const onHandlePanel = () => {
     setTogglePanel(!togglePanel);
   };

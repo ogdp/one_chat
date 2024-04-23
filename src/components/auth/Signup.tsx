@@ -97,7 +97,7 @@ const Signup = (props: IProps) => {
                   float: "left",
                   width: "calc(50% - 8px)",
                 }}
-                name="lastName"
+                name="firstName"
                 rules={[{ required: true, message: "Họ không được bỏ trống!" }]}
               >
                 <Input
@@ -116,7 +116,7 @@ const Signup = (props: IProps) => {
                   float: "right",
                   width: "calc(50% - 8px)",
                 }}
-                name="firstName"
+                name="lastName"
                 rules={[
                   { required: true, message: "Tên không được bỏ trống!" },
                 ]}

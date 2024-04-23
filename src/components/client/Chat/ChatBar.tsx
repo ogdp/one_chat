@@ -13,14 +13,14 @@ interface IProps {
 }
 const ChatBar = (props: IProps) => {
   const { data, isSuccess, refetch } = useGetAllChatUserQuery("");
-  const [searchChat, resultSearchChat] = useSearchChatMutation();
+  const [searchChat] = useSearchChatMutation();
   const [listChat, setListChat] = useState<any>(undefined);
 
   useEffect(() => {
     if (isSuccess) setListChat(data?.docs);
   }, [isSuccess]);
   useEffect(() => {
-    socket.on("message recieved", async (mess: any) => {
+    socket.on("message recieved", async () => {
       await reCall();
     });
     (async () => {
@@ -40,7 +40,6 @@ const ChatBar = (props: IProps) => {
         .then((res) => {
           if (res.totalDocs == 0) {
             message.info("Không tìm thấy người dùng");
-            // setListChat(data?.docs);
           } else {
             setListChat(res?.docs);
           }
@@ -50,8 +49,6 @@ const ChatBar = (props: IProps) => {
       reCall();
     }
   };
-  // console.log(data?.docs);
-
   if (isSuccess && listChat !== undefined) {
     return (
       <>

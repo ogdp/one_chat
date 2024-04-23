@@ -10,7 +10,6 @@ const ChatInput = ({ onHandle }: IProps) => {
   const [form] = Form.useForm();
 
   const normFile = (e: any) => {
-    // console.log("Upload event:", e);
     if (Array.isArray(e)) {
       return e;
     }
