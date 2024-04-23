@@ -8,9 +8,16 @@ export const locationApi = createApi({
     baseUrl: "https://vapi.vnappmob.com/api/province/",
   }),
   endpoints: (builder) => ({
-    getLocation: builder.query({
-      query: (endpoint?: string) => `${endpoint}`,
-      providesTags: ["Location"],
+    // getLocation: builder.query({
+    //   query: (endpoint?: string) => `${endpoint}`,
+    //   providesTags: ["Location"],
+    // }),
+    getLocation: builder.mutation({
+      query: (endpoint?: string) => ({
+        url: `${endpoint}`,
+        method: "GET",
+        providesTags: ["Location"],
+      }),
     }),
     // updatePokemon: builder.mutation({
     //   query: ({ name, patch }) => ({
@@ -26,4 +33,4 @@ export const locationApi = createApi({
   }),
 });
 
-export const { useGetLocationQuery } = locationApi;
+export const { useGetLocationMutation } = locationApi;

@@ -1,6 +1,7 @@
 import { FiLink, FiMessageCircle } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { message } from "antd";
+import { useGetMeQuery } from "@/api";
 
 interface IProps {
   uid: string;
@@ -9,6 +10,7 @@ interface IProps {
 }
 
 const InfoUserTop = (props: IProps | undefined) => {
+  const { data: meData } = useGetMeQuery<any>("me");
   if (props !== undefined) {
     return (
       <div className="w-full h-[25vh] border-b-[1px] border-gray-300 relative">
@@ -26,15 +28,16 @@ const InfoUserTop = (props: IProps | undefined) => {
           </div>
         </div>
         <div className="absolute bottom-[6%] right-[16%] flex items-center font-medium gap-x-2">
-          <Link to={`/chat/${props.uid}`}>
-            <button
-              className="flex items-center gap-x-2  px-7 py-2 rounded-md border border-gray-400 hover:bg-gray-300 bg-gray-200"
-              style={{ transition: "all .35s" }}
-            >
-              {" "}
-              <FiMessageCircle /> Nhắn tin
-            </button>
-          </Link>
+          {props?.uid !== meData?.user?._id && (
+            <Link to={`/chat/${props.uid}`}>
+              <button
+                className="flex items-center gap-x-2  px-7 py-2 rounded-md border border-gray-400 hover:bg-gray-300 bg-gray-200"
+                style={{ transition: "all .35s" }}
+              >
+                <FiMessageCircle /> Nhắn tin
+              </button>
+            </Link>
+          )}
           <button
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);

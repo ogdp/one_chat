@@ -90,7 +90,6 @@ const customFetchBase: BaseQueryFn<
       return (window.location.href = "/auth");
     }
   }
-
   return result;
 };
 

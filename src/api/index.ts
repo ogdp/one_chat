@@ -1,3 +1,5 @@
+import customFetchBase, { socket } from "./customFetchBase";
+
 // Auth API
 import {
   authApi,
@@ -25,9 +27,9 @@ import {
   useGetAllChatUserQuery,
   useSearchChatMutation,
 } from "./chat";
-import { locationApi, useGetLocationQuery } from "./location";
+import { locationApi, useGetLocationMutation } from "./location";
+import { imagesApi, useUploadImagesMutation } from "./images";
 
-import customFetchBase, { socket } from "./customFetchBase";
 export {
   authApi,
   useSiginAccountMutation,
@@ -49,5 +51,7 @@ export {
   socket,
   customFetchBase,
   locationApi,
-  useGetLocationQuery,
+  useGetLocationMutation,
+  imagesApi,
+  useUploadImagesMutation,
 };

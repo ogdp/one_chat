@@ -50,7 +50,7 @@ const ChatBar = (props: IProps) => {
       reCall();
     }
   };
-  console.log(data?.docs);
+  // console.log(data?.docs);
 
   if (isSuccess && listChat !== undefined) {
     return (

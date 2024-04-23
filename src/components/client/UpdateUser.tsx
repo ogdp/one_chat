@@ -9,26 +9,30 @@ import {
   Image,
   UploadProps,
   UploadFile,
+  Space,
+  Select,
 } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { useGetMeQuery, useUpdateUserMutation } from "@/api";
+import {
+  useGetMeQuery,
+  useUpdateUserMutation,
+  useUploadImagesMutation,
+} from "@/api";
 import { LoadingAll } from "@/pages";
 import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { useGetLocationQuery } from "@/api";
+import { useGetLocationMutation } from "@/api";
+import { convertImageToBase64 } from "@/utils/function";
+import "@/css/UpdateUser.css";
 
 dayjs.extend(customParseFormat);
 const UpdateUser = () => {
   const [updateUser, resultUpdateUser] = useUpdateUserMutation();
-  const {
-    data: location,
-    refetch,
-    isFetching,
-    isSuccess: isSuccessLoca,
-  } = useGetLocationQuery("");
+  const [getLocation, resultLocation] = useGetLocationMutation();
+  const [uploadImage, resultUploadImage] = useUploadImagesMutation();
   const [form] = Form.useForm();
-  const { data, isSuccess } = useGetMeQuery("me");
+  const { data: meData, isSuccess } = useGetMeQuery<any>("me");
   const dateFormat = "YYYY-MM-DD";
   const minYear = dayjs(String(dayjs().year() - 90)).format("YYYY-MM-DD");
   const maxYear = dayjs(String(dayjs().year() - 9)).format("YYYY-MM-DD");
@@ -37,88 +41,163 @@ const UpdateUser = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [avatarFileSend, setAvatarFileSend] = useState<File | any>();
+  const [avatarFileSend, setAvatarFileSend] = useState<File | any>(undefined);
   // ---
 
-  if (!data.success || !isSuccess || !isSuccessLoca) {
+  // Location
+  const [provinceData, setProvinceData] = useState<any>([]);
+  const [districtData, setDistrictData] = useState<any>([]);
+  const [district, setDistrict] = useState<string | null>();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (meData) {
+          const province: any = await getLocation("");
+          setProvinceData(province?.data?.results);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
+  // Selected location
+
+  const handleProvinceChange = async (value: string) => {
+    setDistrict(null);
+    try {
+      const idProvince = provinceData.filter(
+        (item: any) => item.province_name === value
+      )[0].province_id;
+      const district: any = await getLocation(`/district/${idProvince}`);
+      setDistrictData(district?.data?.results);
+    } catch (error) {
+      return console.error(error);
+    }
+  };
+  const onSecondCityChange = (value: any) => {
+    setDistrict(value);
+  };
+
+  // ---
+
+  if (!meData.success || !isSuccess) {
     return null;
   }
-  const { user } = data;
-  console.log("location ", location);
 
-  const onFinish = async (informationOld: any) => {
+  const { user } = meData;
+
+  const updateUserInfo = async (informationOld: any) => {
+    if (district) informationOld.district = district;
+    if (
+      informationOld.province == undefined ||
+      !informationOld.province ||
+      !informationOld.district ||
+      informationOld.district == undefined
+    ) {
+      informationOld.province = meData.user.information?.province;
+      informationOld.district = meData.user.information?.district;
+    }
     informationOld.dateOfBirth = dayjs(
       String(informationOld.dateOfBirth.$d)
-    ).format("YYYY-MM-DDTHH:mm:ssZ[Z]");
+    ).format("YYYY-MM-DDThh:mm:ss.sssZ");
     const { password, ...information } = informationOld;
-    const sendData = { ...user, information };
+    const sendData = { ...user };
+    const newInfor = { ...user.information, ...information };
+    sendData.information = newInfor;
     sendData.password = password;
-
     try {
-      // console.log(values);
-      // const data = {
-      //   email_tel: values.email_tel,
-      //   information: {
-      //     firstName: values.firstName,
-      //     lastName: values.lastName,
-      // dateOfBirth: dayjs(String(values.dateOfBirth.$d)).format(
-      //   "YYYY-MM-DD"
-      // ),
-      //     gender: values.gender,
-      //     avatar_url: [
-      //       "https://res.cloudinary.com/minhduc/image/upload/v1710836772/one_chat_db/ayczza4wipygfvepvrup.png",
-      //     ],
-      //   },
-      //   password: values.password,
-      //   confirmPassword: values.confirmPassword,
-      // };
-      // const res = await updateUser(data).unwrap();
-      // await message.success(res.message);
-    } catch (error: any) {
-      console.error("Sign-in error:", error);
-      if (error?.data?.error) {
-        message.error(error.data.error[0]);
-      } else if (error?.data?.message) {
-        message.error(error.data.message);
-      } else {
-        message.error("An unexpected error occurred.");
+      if (avatarFileSend !== undefined) {
+        const resIMG: any = await uploadImage(avatarFileSend.originFileObj);
+        if (resIMG?.data?.urls?.length > 0) {
+          const listIMG = [
+            ...sendData?.information?.avatar_url,
+            ...resIMG?.data?.urls,
+          ].reverse();
+          sendData.information.avatar_url = listIMG;
+        }
       }
+
+      interface DataObject {
+        [key: string]: any;
+        information?: DataObject;
+      }
+
+      const objectToRemove: string[] = [
+        '"information._id"',
+        '"information.email_tel"',
+        '"_id"',
+        '"deleted"',
+        '"createdAt"',
+        '"updatedAt"',
+      ];
+
+      const cleanedData: DataObject = Object.fromEntries(
+        Object.entries(sendData).flatMap(([key, value]) => {
+          const keyToRemove = `"${key}"`;
+          if (objectToRemove.includes(keyToRemove)) return [];
+
+          if (typeof value === "object" && value !== null) {
+            value = Object.fromEntries(
+              Object.entries(value as DataObject).filter(([key, value]) => {
+                const informationKeyToRemove = `"information.${key}"`;
+                return !objectToRemove.includes(informationKeyToRemove);
+              })
+            );
+          }
+
+          return [[key, value]];
+        })
+      );
+
+      return cleanedData;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   };
 
-  //   Upload image
-  const convertImageToBase64 = (file: any) => {
-    return new Promise((resolve) => {
-      let baseURL: any = "";
-      // Make new FileReader
-      let reader: any = new FileReader();
-      // Convert the file to base64 text
-      reader.readAsDataURL(file);
-      // on reader load somthing...
-      reader.onload = () => {
-        // Make a fileInfo Object
-        baseURL = reader.result;
-        resolve(baseURL);
-      };
-    });
+  const onFinish = (informationOld: any) => {
+    updateUserInfo(informationOld)
+      .then((res: any) => {
+        updateUser(res)
+          .then((res: any) => {
+            if (res.error) {
+              message.error(res.error.data.error[0]);
+            } else {
+              message.success("Cập nhật thông tin thành công");
+            }
+            console.log(res);
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => console.log(error));
   };
+  //   Upload image
+
   const handlePreview = async (file: UploadFile) => {
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
 
   const handleChange: UploadProps["onChange"] = async ({ file }) => {
-    setAvatarFileSend(file);
-    const base64Image = await convertImageToBase64(file.originFileObj);
-    setFileList([
-      {
-        uid: "-1",
-        name: "image.png",
-        status: "done",
-        url: String(base64Image),
-      },
-    ]);
-    return false;
+    if (file.originFileObj) {
+      setAvatarFileSend(file);
+      const base64Image = await convertImageToBase64(file.originFileObj);
+      return setFileList([
+        {
+          uid: "-1",
+          name: "image.png",
+          status: "done",
+          url: String(base64Image),
+        },
+      ]);
+    }
+    if (file.status === "removed") {
+      setAvatarFileSend(undefined);
+      return setFileList([]);
+    }
   };
 
   const uploadButton = (
@@ -129,9 +208,11 @@ const UpdateUser = () => {
   );
 
   //   ----
+
   return (
     <>
-      {resultUpdateUser.isLoading && <LoadingAll />}
+      {resultUpdateUser.isLoading ||
+        (resultUploadImage.isLoading && <LoadingAll />)}
       <section className="w-full flex justify-center items-center pt-10">
         <main
           style={{
@@ -173,7 +254,7 @@ const UpdateUser = () => {
                   float: "left",
                   width: "calc(50% - 8px)",
                 }}
-                name="lastName"
+                name="firstName"
                 rules={[{ required: true, message: "Họ không được bỏ trống!" }]}
               >
                 <Input
@@ -192,7 +273,7 @@ const UpdateUser = () => {
                   float: "right",
                   width: "calc(50% - 8px)",
                 }}
-                name="firstName"
+                name="lastName"
                 rules={[
                   { required: true, message: "Tên không được bỏ trống!" },
                 ]}
@@ -234,12 +315,15 @@ const UpdateUser = () => {
             </Form.Item>
 
             <Form.Item
-              labelCol={{ span: 2 }}
+              labelCol={{ span: 8 }}
               wrapperCol={{ span: 24 }}
+              style={{
+                display: "flex",
+                justifyContent: "start",
+              }}
               label="Giới tính"
               name="gender"
               rules={[{ required: true, message: "Lựa chọn giới tính" }]}
-              style={{ marginBottom: "10px" }}
             >
               <Radio.Group
                 style={{
@@ -252,8 +336,12 @@ const UpdateUser = () => {
             </Form.Item>
 
             <Form.Item
-              labelCol={{ span: 2 }}
+              labelCol={{ span: 8 }}
               wrapperCol={{ span: 24 }}
+              style={{
+                display: "flex",
+                justifyContent: "start",
+              }}
               label="Ngày sinh"
               name="dateOfBirth"
               rules={[
@@ -267,6 +355,60 @@ const UpdateUser = () => {
                 minDate={dayjs(String(minYear), dateFormat)}
                 format={dateFormat}
               />
+            </Form.Item>
+            <Form.Item
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 24 }}
+              style={{
+                display: "flex",
+                justifyContent: "start",
+              }}
+              label={
+                <label style={{ display: "flex", color: "black" }}>
+                  Quê quán
+                </label>
+              }
+            >
+              {provinceData.length > 0 && (
+                <Space>
+                  <Form.Item name="province" noStyle>
+                    <Select
+                      showSearch
+                      placeholder={
+                        !meData.user.information.province
+                          ? "Tỉnh/TP"
+                          : provinceData.filter(
+                              (province: any) =>
+                                province.province_name ===
+                                meData.user?.information.province
+                            )[0].province_name
+                      }
+                      style={{ width: 230 }}
+                      onChange={handleProvinceChange}
+                      options={provinceData?.map((province: any) => ({
+                        label: province?.province_name,
+                        value: province?.province_name,
+                      }))}
+                    />
+                  </Form.Item>
+                  <Select
+                    // allowClear
+                    // showSearch
+                    style={{ width: 230 }}
+                    placeholder={
+                      !meData.user.information.district
+                        ? "Quận/Huyện"
+                        : meData.user.information.district
+                    }
+                    value={district}
+                    onChange={onSecondCityChange}
+                    options={districtData?.map((district: any) => ({
+                      label: district?.district_name,
+                      value: district?.district_name,
+                    }))}
+                  />
+                </Space>
+              )}
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
