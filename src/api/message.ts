@@ -8,7 +8,7 @@ export const messageApi = createApi({
   endpoints: (builder) => ({
     getMessages: builder.mutation({
       query: (chatId: string) => ({
-        url: `/messages/${chatId}?_sort=createdAt&_order=desc&_limit=3`,
+        url: `/messages/${chatId}?_sort=createdAt&_order=desc&_limit=8`,
         method: "GET",
         credentials: "include",
       }),

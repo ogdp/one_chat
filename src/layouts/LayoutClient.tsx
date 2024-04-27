@@ -5,7 +5,7 @@ import NavBarComp from "@/components/client/NavBar/NavBarComp";
 const LayoutClient = () => {
   return (
     <>
-      <div className="bg-backgroundLight dark:bg-backgroundDark ">
+      <div className="bg-backgroundLight dark:bg-backgroundDark  text-gray-700">
         <aside>
           <div className="fixed top-0 left-0 min-w-full bg-white z-10">
             <HeaderComp />
