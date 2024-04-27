@@ -5,6 +5,9 @@ import { IUserPro } from "@/interface/user";
 import { socket, useGetMessagesMutation } from "@/api";
 import { useEffect, useState } from "react";
 import { Loading } from "@/pages";
+import { useDispatch } from "react-redux";
+import { closeIconModel } from "@/slices";
+
 interface IProps {
   idRoomChat: string;
   user: IUserPro;
@@ -12,6 +15,7 @@ interface IProps {
 }
 
 const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
+  const dispatch = useDispatch();
   const [listMess, setListMess] = useState<IListMessage | any>(undefined);
   const [getMess, resultGetMess] = useGetMessagesMutation();
   useEffect(() => {
@@ -44,7 +48,12 @@ const ChatBox = ({ idRoomChat, user, nowSend }: IProps) => {
   if (resultGetMess.isSuccess && listMess !== undefined) {
     return (
       <>
-        <main className="overflow-x-hidden overflow-scroll h-[76vh] px-3 pb-8">
+        <main
+          className="overflow-x-hidden overflow-scroll h-[76vh] px-3 pb-8"
+          onClick={() => {
+            dispatch(closeIconModel());
+          }}
+        >
           {listMess.map((item: any, i: string) =>
             item.sender._id !== user._id ? (
               <SentenceLeftChat

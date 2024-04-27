@@ -62,7 +62,7 @@ const ChatPage = () => {
 
   if (!showDisplay) return null;
   return (
-    <section className="flex min-h-full">
+    <section className="flex min-h-full ">
       <div className="w-[72%]">
         {resultCreateChat.isSuccess &&
           idRoomChat !== undefined &&

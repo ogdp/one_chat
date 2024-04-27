@@ -7,6 +7,7 @@ import {
   locationApi,
   imagesApi,
 } from "@/api";
+import { chatSlices } from "@/slices";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     [chatApi.reducerPath]: chatApi.reducer,
     [locationApi.reducerPath]: locationApi.reducer,
     [imagesApi.reducerPath]: imagesApi.reducer,
+    chatSlices: chatSlices,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({}).concat(

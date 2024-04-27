@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import "moment/dist/locale/vi";
 import { message } from "antd";
+import { useDispatch } from "react-redux";
+import { closeIconModel } from "@/slices";
 moment.locale("vi");
 
 interface IProps {
@@ -12,6 +14,7 @@ interface IProps {
   refreshBars: boolean;
 }
 const ChatBar = (props: IProps) => {
+  const dispatch = useDispatch();
   const { data, isSuccess, refetch } = useGetAllChatUserQuery("");
   const [searchChat] = useSearchChatMutation();
   const [listChat, setListChat] = useState<any>(undefined);
@@ -52,7 +55,10 @@ const ChatBar = (props: IProps) => {
   if (isSuccess && listChat !== undefined) {
     return (
       <>
-        <section className="border-l-[1px] border-l-slate-200 h-full">
+        <section
+          className="border-l-[1px] border-l-slate-200 h-full"
+          onClick={() => dispatch(closeIconModel())}
+        >
           <SearchBox onHandle={onHandleSearch} />
           <div className="overflow-x-hidden overflow-scroll h-[82vh]">
             {listChat?.map((item: any, i: string) => {
