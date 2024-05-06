@@ -130,3 +130,27 @@ export const userSchema = Joi.object({
     "any.required": "Password is required field",
   }),
 });
+export const updatePassSchema = Joi.object({
+  password_old: Joi.string().trim().min(6).required().messages({
+    "string.trim": "Password old must not contain spaces",
+    "string.empty": "Password old is required field",
+    "string.min": "Password old must be at least {#limit} characters long",
+    "any.required": "Password old is required field",
+  }),
+  password_new: Joi.string()
+    .trim()
+    .min(6)
+    .invalid(Joi.ref("password_old"))
+    .required()
+    .messages({
+      "string.trim": "Password new must not contain spaces",
+      "string.empty": "Password new is required",
+      "string.min": "Password new must be at least {#limit} characters long",
+      "any.invalid": "New password cannot be the same as the old password",
+      "any.required": "Password new is required",
+    }),
+  password_new_confirm: Joi.valid(Joi.ref("password_new")).required().messages({
+    "any.only": "Confirm password does not match",
+    "any.required": "Confirm password is required",
+  }),
+});

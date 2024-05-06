@@ -1,5 +1,9 @@
 import User from "../models/user.js";
-import { userSchema, createUserSchema } from "../schemas/user.js";
+import {
+  userSchema,
+  createUserSchema,
+  updatePassSchema,
+} from "../schemas/user.js";
 import bcrypt from "bcryptjs";
 
 export const getAll = async (req, res) => {
@@ -58,7 +62,6 @@ export const getMe = async (req, res) => {
     });
   }
 };
-
 const filterUserForGuest = (user) => {
   const {
     _id,
@@ -79,7 +82,6 @@ const filterUserForGuest = (user) => {
     updatedAt,
   };
 };
-
 export const getGuest = async (req, res) => {
   try {
     const user = await User.findById(String(req.params.uid));
@@ -102,7 +104,6 @@ export const getGuest = async (req, res) => {
     });
   }
 };
-
 export const create = async (req, res) => {
   try {
     const { error } = await createUserSchema.validate(req.body, {
@@ -241,6 +242,47 @@ export const search = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       error: error.message,
+    });
+  }
+};
+export const updatePass = async (req, res) => {
+  try {
+    const uid = new Object(req.user._id).toString();
+    const { error } = await updatePassSchema.validate(req.body, {
+      abortEarly: false,
+    });
+    if (error) {
+      return res.status(400).json({
+        error: error.details.map((err) => err.message),
+      });
+    }
+    const user = await User.findById(uid);
+    const isMatch = await bcrypt.compare(req.body.password_old, user.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        error: true,
+        message: "Password old does not match",
+      });
+    }
+    const hashPassword = await bcrypt.hash(req.body.password_new, 10);
+    const userUpdate = await User.findByIdAndUpdate(
+      { _id: uid },
+      { password: hashPassword },
+      {
+        new: true,
+      }
+    );
+    userUpdate.password = undefined;
+    userUpdate.refreshToken = undefined;
+    return res.status(200).json({
+      success: true,
+      message: "Account updated password successfully",
+      userUpdate,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      message: error.message,
     });
   }
 };
