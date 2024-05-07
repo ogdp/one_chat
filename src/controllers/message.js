@@ -47,6 +47,7 @@ export const createMessage = async (req, res) => {
 };
 export const getMessage = async (req, res) => {
   // http://localhost:8080/api/messages/6616d5ef0130fd825d37f067?_sort=createdAt&_order=desc
+  const uid = new Object(req.user._id).toString();
   try {
     const {
       _page = 1,
@@ -71,8 +72,11 @@ export const getMessage = async (req, res) => {
         },
       ],
     };
+    // Tìm kiếm tất cả những message không chứa uid trong mảng deletedUser. Ngược lại thì : { deletedUser: { $elemMatch: { $in: uid } } },
     const messages = await Message.paginate(
-      { chat: req.params.chatId },
+      {
+        $and: [{ chat: req.params.chatId }, { deletedUser: { $nin: [uid] } }],
+      },
       options
     );
     return res.status(200).send(messages);

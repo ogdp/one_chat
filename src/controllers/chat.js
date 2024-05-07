@@ -2,6 +2,7 @@ import { createChatSchema } from "../schemas/chat.js";
 import Chat from "../models/chat.js";
 import User from "../models/user.js";
 import mongoose from "mongoose";
+import Message from "../models/message.js";
 
 export const createChat = async (req, res) => {
   try {
@@ -166,5 +167,74 @@ export const searchChat = async (req, res) => {
     });
   } catch (error) {
     return res.status(400).send(error.message);
+  }
+};
+
+export const removeChat = async (req, res) => {
+  try {
+    // Lấy tất cả đoạn chat của user
+    const {
+      _page = 1,
+      _order = "asc",
+      _limit = 20000,
+      _sort = "updatedAt",
+    } = req.query;
+    const options = {
+      page: _page,
+      limit: _limit,
+      sort: {
+        [_sort]: _order == "desc" ? 1 : -1,
+      },
+      populate: [
+        {
+          path: "users",
+          // Tìm kiếm tất cả loại trừ id của người $ne
+          match: { _id: { $ne: req.user._id } },
+          select: `-password -refreshToken`,
+        },
+        {
+          path: "latestMessage",
+          populate: [
+            {
+              path: "sender",
+              select: "-password -refreshToken",
+            },
+          ],
+        },
+      ],
+    };
+    const chat = await Chat.paginate(
+      { users: { $elemMatch: { $eq: req.user._id } } },
+      options
+    );
+
+    const checkIdChat = chat.docs.find((doc) => doc._id == req.params.idChat);
+
+    if (checkIdChat === undefined)
+      return res.status(404).json({
+        error: true,
+        message: "Chat room not found",
+      });
+    // Push uid to deletedUser
+    await Message.updateMany(
+      { chat: checkIdChat._id },
+      { $addToSet: { deletedUser: req.user._id } },
+      {
+        new: true,
+      }
+    );
+
+    // Delete chat deletedUser.length == 2
+    const findLength = await Message.deleteMany({ deletedUser: { $size: 2 } });
+    return res.status(200).json({
+      success: true,
+      message: "Deleted chat room successfully !",
+      findLength,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      message: error.message,
+    });
   }
 };
