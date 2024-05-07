@@ -95,6 +95,7 @@ export const getAllChatUser = async (req, res) => {
         },
         {
           path: "latestMessage",
+          match: { deletedUser: { $nin: [req.user._id] } },
           populate: [
             {
               path: "sender",
