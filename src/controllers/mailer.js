@@ -37,7 +37,7 @@ export const getCode = async (req, res) => {
   const randomCode = generateRandomCode(6);
 
   sendCodeResetPassword(
-    String(req.user.information.firstName),
+    String(req.user.information.lastName),
     String(req.user.email_tel),
     randomCode
   );

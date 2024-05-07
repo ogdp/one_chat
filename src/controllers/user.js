@@ -138,7 +138,8 @@ export const update = async (req, res) => {
     });
     if (error) {
       return res.status(400).json({
-        error: error.details.map((err) => err.message),
+        error: true,
+        message: error.details.map((err) => err.message),
       });
     }
     const user = await User.findById(uid);
@@ -256,7 +257,8 @@ export const updatePass = async (req, res) => {
     });
     if (error) {
       return res.status(400).json({
-        error: error.details.map((err) => err.message),
+        error: true,
+        message: error.details.map((err) => err.message),
       });
     }
 
@@ -270,6 +272,7 @@ export const updatePass = async (req, res) => {
     if (req.body.code !== decoded.code) {
       return res.status(400).json({
         error: true,
+        type: "code",
         message: "Code not is match!",
       });
     }
@@ -286,7 +289,7 @@ export const updatePass = async (req, res) => {
     const hashPassword = await bcrypt.hash(req.body.password_new, 10);
     const userUpdate = await User.findByIdAndUpdate(
       { _id: uid },
-      { password: hashPassword, code: 0 },
+      { password: hashPassword, code: "000000" },
       {
         new: true,
       }
@@ -300,16 +303,19 @@ export const updatePass = async (req, res) => {
     if (error instanceof Jwt.TokenExpiredError) {
       return res.status(400).json({
         error: true,
+        type: "code",
         message: "Code expired!",
       });
     } else if (error instanceof Jwt.NotBeforeError) {
       return res.status(401).json({
         error: true,
+        type: "code",
         message: "Code not yet in effect!",
       });
     } else if (error instanceof Jwt.JsonWebTokenError) {
       return res.status(401).json({
         error: true,
+        type: "code",
         message: "Invalid Code!",
       });
     }

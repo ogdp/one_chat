@@ -68,6 +68,7 @@ export const createUserSchema = Joi.object({
     "any.only": "Confirm password does not match",
     "any.required": "Confirm password is required",
   }),
+  code: Joi.any(),
 });
 export const userSchema = Joi.object({
   email_tel: Joi.string().trim().required().messages({
@@ -129,6 +130,7 @@ export const userSchema = Joi.object({
     "string.min": "Password must be at least {#limit} characters long",
     "any.required": "Password is required field",
   }),
+  code: Joi.any(),
 });
 export const updatePassSchema = Joi.object({
   password_old: Joi.string().trim().min(6).required().messages({
