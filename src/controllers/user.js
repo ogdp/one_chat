@@ -5,6 +5,9 @@ import {
   updatePassSchema,
 } from "../schemas/user.js";
 import bcrypt from "bcryptjs";
+import Jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const getAll = async (req, res) => {
   try {
@@ -246,8 +249,8 @@ export const search = async (req, res) => {
   }
 };
 export const updatePass = async (req, res) => {
+  const uid = new Object(req.user._id).toString();
   try {
-    const uid = new Object(req.user._id).toString();
     const { error } = await updatePassSchema.validate(req.body, {
       abortEarly: false,
     });
@@ -256,7 +259,23 @@ export const updatePass = async (req, res) => {
         error: error.details.map((err) => err.message),
       });
     }
-    const user = await User.findById(uid);
+
+    const user = await User.findOne({
+      _id: req.user._id,
+    }).select("-refreshToken");
+
+    // Check code
+
+    const decoded = Jwt.verify(user.code, process.env.JWT_SECRET_KEY);
+    if (req.body.code !== decoded.code) {
+      return res.status(400).json({
+        error: true,
+        message: "Code not is match!",
+      });
+    }
+
+    // ---
+
     const isMatch = await bcrypt.compare(req.body.password_old, user.password);
     if (!isMatch) {
       return res.status(400).json({
@@ -267,20 +286,34 @@ export const updatePass = async (req, res) => {
     const hashPassword = await bcrypt.hash(req.body.password_new, 10);
     const userUpdate = await User.findByIdAndUpdate(
       { _id: uid },
-      { password: hashPassword },
+      { password: hashPassword, code: 0 },
       {
         new: true,
       }
-    );
-    userUpdate.password = undefined;
-    userUpdate.refreshToken = undefined;
+    ).select("-password -refreshToken");
     return res.status(200).json({
       success: true,
       message: "Account updated password successfully",
       userUpdate,
     });
   } catch (error) {
-    return res.status(400).json({
+    if (error instanceof Jwt.TokenExpiredError) {
+      return res.status(400).json({
+        error: true,
+        message: "Code expired!",
+      });
+    } else if (error instanceof Jwt.NotBeforeError) {
+      return res.status(401).json({
+        error: true,
+        message: "Code not yet in effect!",
+      });
+    } else if (error instanceof Jwt.JsonWebTokenError) {
+      return res.status(401).json({
+        error: true,
+        message: "Invalid Code!",
+      });
+    }
+    return res.status(500).json({
       error: true,
       message: error.message,
     });

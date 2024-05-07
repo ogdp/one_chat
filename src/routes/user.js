@@ -10,7 +10,7 @@ import {
   search,
   updatePass,
 } from "../controllers/user.js";
-import { checkCode, getCode } from "../controllers/mailer.js";
+import { getCode } from "../controllers/mailer.js";
 
 const router = express.Router();
 
@@ -23,6 +23,5 @@ router.delete("/", checkTokenOwnership, remove);
 router.get("/search/top", search); // Example: http://localhost:8080/api/users/search/top?key=Đức&&_order=desc&_sort=createdAt&_limit=1&_page=1
 router.patch("/update-password", checkTokenOwnership, updatePass);
 router.get("/getcode-mail/v1", checkTokenOwnership, getCode);
-router.post("/getcode-mail/v1", checkTokenOwnership, checkCode);
 
 export default router;

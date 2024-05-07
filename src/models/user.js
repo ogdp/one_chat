@@ -71,6 +71,7 @@ const userSchema = new mongoose.Schema(
     code: {
       type: String,
       length: 6,
+      default: "0",
     },
   },
   { timestamps: true, versionKey: false }

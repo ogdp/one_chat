@@ -153,4 +153,10 @@ export const updatePassSchema = Joi.object({
     "any.only": "Confirm password does not match",
     "any.required": "Confirm password is required",
   }),
+  code: Joi.string().trim().length(6).required().messages({
+    "string.trim": "Code must not contain spaces",
+    "string.empty": "Code is required field",
+    "string.length": "Code length must be {{#limit}} characters long",
+    "string.required": "Code is required",
+  }),
 });
