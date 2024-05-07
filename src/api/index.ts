@@ -28,6 +28,7 @@ import {
   useCreateChatMutation,
   useGetAllChatUserQuery,
   useSearchChatMutation,
+  useDeleteChatMutation,
 } from "./chat";
 import { locationApi, useGetLocationMutation } from "./location";
 import { imagesApi, useUploadImagesMutation } from "./images";
@@ -52,6 +53,7 @@ export {
   useCreateChatMutation,
   useGetAllChatUserQuery,
   useSearchChatMutation,
+  useDeleteChatMutation,
   socket,
   customFetchBase,
   locationApi,
