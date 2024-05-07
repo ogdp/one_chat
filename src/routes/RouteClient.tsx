@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import LayoutClient from "@/layouts/LayoutClient";
 import { ChatPage, HomePage, Page404, ProfilesPage } from "@/pages";
-import ResultSearchUser from "@/pages/client/ResultSearchUser";
+import ResultSearchUser from "@/pages/client/User/ResultSearchUser";
 
 const RouteClient = () => {
   return (

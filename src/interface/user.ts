@@ -30,6 +30,7 @@ export interface IUpdateUser {
   active_status?: string;
   role?: string;
   information: Information2;
+  code?: string;
   password: string;
 }
 
@@ -56,6 +57,7 @@ export interface IUserPro {
   role: string;
   information: InformationPro;
   deleted: boolean;
+  code?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -67,4 +69,11 @@ interface InformationPro {
   gender: string;
   avatar_url: string[];
   _id: string;
+}
+
+export interface IUpdatePass {
+  password_old: string;
+  password_new: string;
+  password_new_confirm: string;
+  code: string;
 }

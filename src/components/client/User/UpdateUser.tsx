@@ -82,12 +82,9 @@ const UpdateUser = () => {
 
   // ---
 
-  if (!meData.success || !isSuccess) {
-    return null;
-  }
+  if (!meData.success || !isSuccess) return null;
 
   const { user } = meData;
-
   const updateUserInfo = async (informationOld: any) => {
     if (district) informationOld.district = district;
     if (
@@ -118,7 +115,6 @@ const UpdateUser = () => {
           sendData.information.avatar_url = listIMG;
         }
       }
-
       interface DataObject {
         [key: string]: any;
         information?: DataObject;
@@ -137,7 +133,6 @@ const UpdateUser = () => {
         Object.entries(sendData).flatMap(([key, value]) => {
           const keyToRemove = `"${key}"`;
           if (objectToRemove.includes(keyToRemove)) return [];
-
           if (typeof value === "object" && value !== null) {
             value = Object.fromEntries(
               Object.entries(value as DataObject).filter(([key]) => {
@@ -146,11 +141,9 @@ const UpdateUser = () => {
               })
             );
           }
-
           return [[key, value]];
         })
       );
-
       return cleanedData;
     } catch (error) {
       console.error(error);
@@ -164,7 +157,7 @@ const UpdateUser = () => {
         updateUser(res)
           .then((res: any) => {
             if (res.error) {
-              message.error(res.error.data.error[0]);
+              message.error(res.error.data.message);
             } else {
               message.success("Cập nhật thông tin thành công");
             }

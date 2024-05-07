@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import customFetchBase from "./customFetchBase";
 import { IUpdateUser } from "@/interface";
+import { IUpdatePass } from "@/interface/user";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -40,6 +41,23 @@ export const userApi = createApi({
       }),
       providesTags: ["User"],
     }),
+    sendCodeMail: builder.mutation({
+      query: () => ({
+        url: `/users/getcode-mail/v1`,
+        method: "GET",
+        credentials: "include",
+      }),
+      invalidatesTags: ["User"],
+    }),
+    changePassUser: builder.mutation({
+      query: (payload: IUpdatePass) => ({
+        url: `/users/update-password`,
+        method: "PATCH",
+        body: payload,
+        credentials: "include",
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -50,4 +68,6 @@ export const {
   useSearchUserQuery,
   useLazySearchUserQuery,
   useLazyGetMeQuery,
+  useSendCodeMailMutation,
+  useChangePassUserMutation,
 } = userApi;

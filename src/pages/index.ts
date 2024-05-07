@@ -7,7 +7,7 @@ import SigninPage from "./auth/SigninPage";
 
 // Client
 
-import ProfilesPage from "./client/ProfilesPage";
+import ProfilesPage from "./client/User/ProfilesPage";
 import HomePage from "./client/HomePage";
 import ChatPage from "./client/ChatPage";
 

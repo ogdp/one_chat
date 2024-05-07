@@ -2,7 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiPower, FiSettings, FiUser, FiX } from "react-icons/fi";
 import { IUserPro } from "@/interface/user";
 import { useLogoutAccountMutation } from "@/api";
-import { message } from "antd";
+import { Modal, message } from "antd";
+import { useState } from "react";
+import ChangePassComp from "@/components/client/User/ChangePassComp";
 
 interface IProps {
   user: IUserPro;
@@ -12,6 +14,7 @@ interface IProps {
 const UserDrawerPanel = ({ user, toggle }: IProps) => {
   const navigate = useNavigate();
   const [logout] = useLogoutAccountMutation();
+  const [changePassActive, setchangePassActive] = useState(false);
   const onHandleLogout = () => {
     logout("")
       .unwrap()
@@ -22,6 +25,10 @@ const UserDrawerPanel = ({ user, toggle }: IProps) => {
       .catch((error) => {
         message.error(error.data.message);
       });
+  };
+
+  const activeModelChangePass = () => {
+    setchangePassActive(!changePassActive);
   };
   return (
     <>
@@ -50,12 +57,13 @@ const UserDrawerPanel = ({ user, toggle }: IProps) => {
             </Link>
           </div>
           <div className="px-5 py-2 border-b-[1px] border-b-gray-200 hover:bg-gray-100">
-            <Link onClick={() => toggle()} to="/change-password">
-              <button className="flex items-center gap-x-1 justify-center font-medium">
-                <FiSettings size={"18"} />
-                Đổi mật khẩu
-              </button>
-            </Link>
+            <button
+              onClick={() => activeModelChangePass()}
+              className="flex items-center gap-x-1 justify-center font-medium"
+            >
+              <FiSettings size={"18"} />
+              Đổi mật khẩu
+            </button>
           </div>
           <div className="px-5 py-2 border-b-[1px] border-b-gray-200 hover:bg-gray-100 text-red-600">
             <button
@@ -76,6 +84,16 @@ const UserDrawerPanel = ({ user, toggle }: IProps) => {
           </div>
         </div>
       </section>
+      <Modal
+        centered
+        open={changePassActive}
+        onOk={() => activeModelChangePass()}
+        onCancel={() => activeModelChangePass()}
+        width={700}
+        footer={null}
+      >
+        <ChangePassComp activeModelChangePass={activeModelChangePass} />
+      </Modal>
     </>
   );
 };

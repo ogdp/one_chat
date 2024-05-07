@@ -1,6 +1,6 @@
 import { useGetGuestQuery, useGetMeQuery } from "@/api";
 import { UpdateUser } from "@/components";
-import InfoUserTop from "@/components/client/InfoUserTop";
+import InfoUserTop from "@/components/client/User/InfoUserTop";
 import { LoadingAll } from "@/pages";
 import { SmileOutlined } from "@ant-design/icons";
 import { Result } from "antd";

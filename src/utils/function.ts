@@ -21,3 +21,8 @@ export const convertImageToBase64 = (file: any) => {
     };
   });
 };
+
+export const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};

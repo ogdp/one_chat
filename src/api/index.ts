@@ -15,6 +15,8 @@ import {
   useUpdateUserMutation,
   useLazyGetMeQuery,
   useLazySearchUserQuery,
+  useSendCodeMailMutation,
+  useChangePassUserMutation,
 } from "./user";
 import {
   messageApi,
@@ -41,6 +43,8 @@ export {
   useUpdateUserMutation,
   useLazyGetMeQuery,
   useLazySearchUserQuery,
+  useSendCodeMailMutation,
+  useChangePassUserMutation,
   messageApi,
   useGetMessagesMutation,
   usePostMessageMutation,

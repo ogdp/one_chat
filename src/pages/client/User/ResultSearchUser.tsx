@@ -1,7 +1,7 @@
 import { useGetMeQuery, useSearchUserQuery } from "@/api/user";
 import SearchCard from "@/components/client/SearchCard";
 import { useSearchParams } from "react-router-dom";
-import { LoadingAll } from "..";
+import { LoadingAll } from "../..";
 
 const ResultSearchUser = () => {
   let [searchParams] = useSearchParams();
