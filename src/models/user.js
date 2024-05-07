@@ -68,6 +68,10 @@ const userSchema = new mongoose.Schema(
     refreshToken: {
       type: Array,
     },
+    code: {
+      type: String,
+      length: 6,
+    },
   },
   { timestamps: true, versionKey: false }
 );
