@@ -13,7 +13,7 @@ const PostHomeComp = () => {
         <div className="flex justify-center items-start gap-x-2">
           <div>
             <img
-              src="https://images.squarespace-cdn.com/content/5edb32112cb3cc498e15a24d/1592278746395-AEX09Z0GJDHC3AFLV7AL/Squareprint+93+Logo+final-01.png?content-type=image%2Fpng"
+              src="https://res.cloudinary.com/dihqzuybm/image/upload/v1715066442/images_noname/t8mimguzrtec9wfewk4j.png"
               alt=""
               className="w-[45px] h-[45px] rounded-full overflow-hidden object-cover"
             />
@@ -21,7 +21,7 @@ const PostHomeComp = () => {
           <div className="flex-col items-start">
             <div>
               <Link to={"/"} className="font-medium text-base">
-                Tap Chi Bong Da
+                Tin tức Bóng Đá 24h
               </Link>
             </div>
             <h3 className="text-gray-500 text-sm">11 gio</h3>
@@ -35,13 +35,13 @@ const PostHomeComp = () => {
       </div>
       <div>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Obcaecati
-          similique magni quibusdam.
+          🚨 CHÍNH THỨC! Marco Reus thông báo anh sẽ RỜI Borussia Dortmund vào
+          cuối mùa giải, sau 12 năm gắn bó. 👋💛🖤 Kết thúc một thời đại 😥❤️🇩🇪
         </p>
       </div>
       <div className="flex justify-center items-center py-2">
         <img
-          src="https://images.squarespace-cdn.com/content/5edb32112cb3cc498e15a24d/1592278746395-AEX09Z0GJDHC3AFLV7AL/Squareprint+93+Logo+final-01.png?content-type=image%2Fpng"
+          src="https://res.cloudinary.com/dihqzuybm/image/upload/v1715066384/images_noname/d9z1gspctgepx8oln5el.png"
           alt=""
           className="w-[623px] h-[623px]"
         />

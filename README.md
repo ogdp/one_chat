@@ -16,10 +16,21 @@
 
 ## Hình ảnh
 
+## Chức năng
+
+- **Quản lý tin nhắn**
+- **Cập nhật thông tin**
+- **Thay đổi mật khẩu**
+- **Đăng bài viết mới**
+- **Đăng xuất khỏi tất cả các thiết bị**
+- **Cảm xúc, bình luận, chia sẻ bài viết**
+
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1715066884/images_noname/shicylxovkwoeydz3r5g.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1715066983/images_noname/oyeeip0zhornqbevibqk.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1715066506/images_noname/ausoue4tp3mmn8sql19o.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/h3zfolnm3x5nwreqzdtb.png)
 ![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/wk9jor09vogogylf1orr.png)
 ![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/zylks4mibhzry0b3dtsz.png)
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/an49qfguhwrlikoeahfc.png)
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/h3zfolnm3x5nwreqzdtb.png)
 
 ## Cài đặt
 
