@@ -219,6 +219,7 @@ export const removeChat = async (req, res) => {
     // Push uid to deletedUser
     await Message.updateMany(
       { chat: checkIdChat._id },
+      // Thêm uid nếu đã tồn tại nó sẽ không thêm nữa
       { $addToSet: { deletedUser: req.user._id } },
       {
         new: true,

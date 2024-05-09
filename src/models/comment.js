@@ -7,9 +7,7 @@ const commentSchema = new mongoose.Schema(
   {
     post: { type: mongoose.Types.ObjectId, ref: "Post", required: true },
     contents: { type: String, required: true },
-    image: {
-      type: Array,
-    },
+    image: { type: String },
   },
   { timestamps: true, versionKey: false }
 );
