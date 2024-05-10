@@ -15,6 +15,13 @@ export const getAllPost = async (req, res) => {
       sort: {
         [_sort]: _order == "desc" ? 1 : -1,
       },
+      populate: [
+        {
+          path: "author",
+          select:
+            "information.firstName information.lastName information.avatar_url _id",
+        },
+      ],
     };
     const posts = await Post.paginate(
       {
