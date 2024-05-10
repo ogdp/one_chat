@@ -30,6 +30,16 @@ import {
   useSearchChatMutation,
   useDeleteChatMutation,
 } from "./chat";
+import {
+  postApi,
+  useGetAllPostsQuery,
+  useGetOnePostQuery,
+  useGetAllPostOneUserMutation,
+  useCreatePostMutation,
+  useUpdatePostMutation,
+  useDeletePostMutation,
+} from "./post";
+
 import { locationApi, useGetLocationMutation } from "./location";
 import { imagesApi, useUploadImagesMutation } from "./images";
 
@@ -54,6 +64,13 @@ export {
   useGetAllChatUserQuery,
   useSearchChatMutation,
   useDeleteChatMutation,
+  postApi,
+  useGetAllPostsQuery,
+  useGetOnePostQuery,
+  useGetAllPostOneUserMutation,
+  useCreatePostMutation,
+  useUpdatePostMutation,
+  useDeletePostMutation,
   socket,
   customFetchBase,
   locationApi,

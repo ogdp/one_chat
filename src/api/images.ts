@@ -9,7 +9,13 @@ export const imagesApi = createApi({
     uploadImages: builder.mutation({
       query: (file: any) => {
         const formData = new FormData();
-        formData.append("images", file);
+        if (file.length > 0) {
+          for (const iterator of file) {
+            formData.append("images", iterator);
+          }
+        } else {
+          formData.append("images", file);
+        }
         return {
           url: `/images/upload`,
           method: "POST",

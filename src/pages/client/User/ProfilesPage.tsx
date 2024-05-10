@@ -1,18 +1,28 @@
 import { useGetGuestQuery, useGetMeQuery } from "@/api";
 import { UpdateUser } from "@/components";
+import PostUserComp from "@/components/client/Post/PostUserComp";
 import InfoUserTop from "@/components/client/User/InfoUserTop";
 import { LoadingAll } from "@/pages";
 import { SmileOutlined } from "@ant-design/icons";
 import { Result } from "antd";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ProfilesPage = () => {
+  const modelEditUser = useSelector(
+    (state: any) => state.profilesSlices.toogleEditUser
+  );
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
   const uid = searchParams.get("id");
   if (uid) {
     const { data, isLoading } = useGetGuestQuery(String(uid));
-    isLoading && <LoadingAll />;
+    const { data: meData, isLoading: loadMeData } = useGetMeQuery("me");
+    (isLoading || loadMeData) && <LoadingAll />;
+    if (data?.userGuest?._id === meData?.user?._id) {
+      window.location.href = "/profiles";
+      return true;
+    }
     if (data == undefined && !isLoading) {
       return (
         <>
@@ -63,20 +73,20 @@ const ProfilesPage = () => {
       );
     }
   } else {
-    const { data, isLoading } = useGetMeQuery("me");
-    if (isLoading) {
+    const { data: meData, isLoading: loadMeData } = useGetMeQuery("me");
+    if (loadMeData) {
       return <LoadingAll />;
-    } else if (!isLoading) {
+    } else if (!loadMeData) {
       const fullName =
-        data?.user?.information?.firstName +
+        meData?.user?.information?.firstName +
         " " +
-        data?.user?.information?.lastName;
-      const uid = data?.user?._id;
-      const avatar_url = data?.user?.information.avatar_url;
-      isLoading && <LoadingAll />;
+        meData?.user?.information?.lastName;
+      const uid = meData?.user?._id;
+      const avatar_url = meData?.user?.information.avatar_url;
+      loadMeData && <LoadingAll />;
       return (
         <>
-          {isLoading && <LoadingAll />}
+          {loadMeData && <LoadingAll />}
           <section>
             {
               <InfoUserTop
@@ -85,7 +95,7 @@ const ProfilesPage = () => {
                 avatar_url={avatar_url}
               />
             }
-            <UpdateUser />
+            {modelEditUser ? <UpdateUser /> : <PostUserComp />}
           </section>
         </>
       );

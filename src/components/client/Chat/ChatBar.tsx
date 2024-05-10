@@ -53,7 +53,6 @@ const ChatBar = (props: IProps) => {
     }
   };
   if (isSuccess && listChat !== undefined) {
-    console.log(listChat);
     return (
       <>
         <section

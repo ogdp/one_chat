@@ -1,10 +1,9 @@
-import { UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Space, Upload } from "antd";
+import { Button, Form, Input, Space } from "antd";
 import { BsFillSendFill } from "react-icons/bs";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { BsEmojiSmile } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { closeIconModel, openIconModel } from "@/slices";
 
@@ -15,15 +14,13 @@ interface IProps {
 const ChatInput = ({ onHandle }: IProps) => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const [modelPickerIcon, setModelPickerIcon] = useState(false);
   const [content, setContent] = useState("");
-
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
+  // const normFile = (e: any) => {
+  //   if (Array.isArray(e)) {
+  //     return e;
+  //   }
+  //   return e?.fileList;
+  // };
 
   const onFinish = async (values: any) => {
     form.resetFields();

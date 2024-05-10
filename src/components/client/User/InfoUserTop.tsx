@@ -2,7 +2,10 @@ import { FiLink, FiMessageCircle } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { message } from "antd";
 import { useGetMeQuery } from "@/api";
-
+import { LiaUserEditSolid } from "react-icons/lia";
+import { useSelector, useDispatch } from "react-redux";
+import { closeEditUser, openEditUser } from "@/slices";
+import { FaListUl } from "react-icons/fa";
 interface IProps {
   uid: string;
   fullName: string;
@@ -10,7 +13,12 @@ interface IProps {
 }
 
 const InfoUserTop = (props: IProps | undefined) => {
+  const dispatch = useDispatch();
+  const modelEditUser = useSelector(
+    (state: any) => state.profilesSlices.toogleEditUser
+  );
   const { data: meData } = useGetMeQuery<any>("me");
+
   if (props !== undefined) {
     return (
       <div className="w-full h-[25vh] border-b-[1px] border-gray-300 relative">
@@ -38,6 +46,26 @@ const InfoUserTop = (props: IProps | undefined) => {
               </button>
             </Link>
           )}
+          {props?.uid === meData?.user?._id ? (
+            modelEditUser ? (
+              <button
+                onClick={() => dispatch(closeEditUser())}
+                className="px-3 py-3 rounded-md border border-gray-400 hover:bg-gray-300 bg-gray-200"
+                style={{ transition: "all .35s" }}
+              >
+                <FaListUl size={16} className="font-bold" />
+              </button>
+            ) : (
+              <button
+                onClick={() => dispatch(openEditUser())}
+                className="px-3 py-3 rounded-md border border-gray-400 hover:bg-gray-300 bg-gray-200"
+                style={{ transition: "all .35s" }}
+              >
+                <LiaUserEditSolid size={16} className="font-bold" />
+              </button>
+            )
+          ) : null}
+
           <button
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);

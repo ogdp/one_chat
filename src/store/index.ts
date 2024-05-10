@@ -6,8 +6,9 @@ import {
   chatApi,
   locationApi,
   imagesApi,
+  postApi,
 } from "@/api";
-import { chatSlices, homeSlices } from "@/slices";
+import { chatSlices, homeSlices, profilesSlices } from "@/slices";
 
 export const store = configureStore({
   reducer: {
@@ -17,8 +18,10 @@ export const store = configureStore({
     [chatApi.reducerPath]: chatApi.reducer,
     [locationApi.reducerPath]: locationApi.reducer,
     [imagesApi.reducerPath]: imagesApi.reducer,
+    [postApi.reducerPath]: postApi.reducer,
     chatSlices: chatSlices,
     homeSlices: homeSlices,
+    profilesSlices: profilesSlices,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({}).concat(
@@ -27,6 +30,7 @@ export const store = configureStore({
       messageApi.middleware,
       chatApi.middleware,
       locationApi.middleware,
-      imagesApi.middleware
+      imagesApi.middleware,
+      postApi.middleware
     ),
 });

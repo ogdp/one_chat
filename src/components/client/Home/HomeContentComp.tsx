@@ -1,13 +1,17 @@
 import { RiLiveLine } from "react-icons/ri";
 import { PiImageDuotone } from "react-icons/pi";
 import { VscReactions } from "react-icons/vsc";
-import CreatePostComp from "@/components/client/Home/CreatePostComp";
+import CreatePostComp from "@/components/client/Post/CreatePostComp";
 import { useSelector, useDispatch } from "react-redux";
 import { openPostModel } from "@/slices";
-import PostHomeComp from "./PostHomeComp";
+import PostHomeComp from "../Post/PostHomeComp";
+import { useGetMeQuery } from "@/api";
+
 const HomeContentComp = () => {
   const dispatch = useDispatch();
   const modelPost = useSelector((state: any) => state.homeSlices);
+  const { data: meData, isLoading } = useGetMeQuery("me");
+  if (isLoading) return;
   return (
     <>
       <main className="py-[3%]">
@@ -16,7 +20,7 @@ const HomeContentComp = () => {
             <div className="flex gap-x-4 py-4 border-b-[1px] border-b-gray-300">
               <div className="rounded-full w-12 h-12 overflow-hidden">
                 <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTH-L2fx_g1oUGNJV_mn0-tN5j8mqf58SSlU3_sM-m57g&s"
+                  src={meData?.user?.information?.avatar_url}
                   alt=""
                   className="w-full object-contain h-full"
                 />
@@ -25,7 +29,9 @@ const HomeContentComp = () => {
                 onClick={() => dispatch(openPostModel())}
                 className="w-full rounded-full px-5 flex justify-start items-center bg-gray-200 hover:bg-gray-300 cursor-pointer"
               >
-                <h4>Minh Duc oi, ban dang nghi gi the ?</h4>
+                <h4>
+                  {meData.user.information.lastName} ơi. Bạn đang nghĩ gì ?
+                </h4>
               </div>
             </div>
           </div>
