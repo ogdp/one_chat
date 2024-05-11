@@ -63,6 +63,7 @@ const PostUserComp = () => {
   const onHandlePost = (actions: string, item: any) => {
     switch (actions) {
       case "delete":
+        if (!confirm("Xoá bài viết bạn sẽ không thể khôi phục")) return;
         deletePost(String(item._id))
           .unwrap()
           .then(() => {

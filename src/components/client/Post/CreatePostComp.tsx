@@ -77,7 +77,7 @@ const CreatePostComp = () => {
     try {
       const { data }: any = await uploadImages(listOriginFileObj);
       const sendData = {
-        contents: content,
+        ...(content && { contents: content }),
         images: data?.urls,
       };
       createPost(sendData)
