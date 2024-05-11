@@ -1,6 +1,11 @@
 import chatSlices, { openIconModel, closeIconModel } from "./chat";
 import homeSlices, { openPostModel, closePostModel } from "./home";
-import profilesSlices, { openEditUser, closeEditUser } from "./profiles";
+import profilesSlices, {
+  openEditUser,
+  closeEditUser,
+  onActionPost,
+  offActionPost,
+} from "./profiles";
 
 export {
   chatSlices,
@@ -12,4 +17,6 @@ export {
   profilesSlices,
   openEditUser,
   closeEditUser,
+  onActionPost,
+  offActionPost,
 };

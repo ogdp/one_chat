@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { customFetchBase } from "@/api";
+import { IPost } from "@/interface/post";
 
 export const postApi = createApi({
   reducerPath: "postApi",
@@ -31,18 +32,19 @@ export const postApi = createApi({
       invalidatesTags: ["Post"],
     }),
     createPost: builder.mutation({
-      query: (data) => ({
+      query: (payload: IPost) => ({
         url: "/posts",
         method: "POST",
-        body: data,
+        body: payload,
         credentials: "include",
       }),
       invalidatesTags: ["Post"],
     }),
     updatePost: builder.mutation({
-      query: (idPost: string) => ({
-        url: `/posts/${idPost}`,
+      query: (payload: IPost) => ({
+        url: `/posts/${payload._id}`,
         method: "PATCH",
+        body: payload,
         credentials: "include",
       }),
       invalidatesTags: ["Post"],

@@ -1,7 +1,8 @@
 import {
+  useDeletePostMutation,
   useGetAllPostOneUserMutation,
-  useGetAllPostsQuery,
   useGetMeQuery,
+  useUpdatePostMutation,
 } from "@/api";
 import {
   AiOutlineComment,
@@ -10,24 +11,88 @@ import {
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import moment from "moment";
-import "moment/dist/locale/vi";
 import { Loading } from "@/pages";
 import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
+import { useSelector, useDispatch } from "react-redux";
+import { onActionPost, offActionPost } from "@/slices";
+import "moment/dist/locale/vi";
+import { MdDeleteSweep } from "react-icons/md";
+import { RiChatPrivateFill, RiGitRepositoryPrivateFill } from "react-icons/ri";
+import { message } from "antd";
+import { BiSolidShow } from "react-icons/bi";
 moment.locale("vi");
 
 const PostUserComp = () => {
-  const [getPostUser, resultGetPostUser] = useGetAllPostOneUserMutation();
+  const dispatch = useDispatch();
   const { data: meData, isLoading } = useGetMeQuery("me");
+  const [deletePost] = useDeletePostMutation();
+  const [updatePost] = useUpdatePostMutation();
+  const [getPostUser, resultGetPostUser] = useGetAllPostOneUserMutation();
+  const [sn, setSn] = useState<any>({ index: undefined });
   const [postLists, setPostLists] = useState([]);
   useEffect(() => {
     if (meData) {
-      getPostUser(meData.user._id)
+      getPostUser("0")
         .unwrap()
         .then((res) => setPostLists(res.data.docs))
         .catch((err) => console.log(err));
     }
   }, [isLoading]);
+
+  const statusControlActions = useSelector(
+    (state: any) => state.profilesSlices.toogleActionPost
+  );
+  const onHandleControl = (e: any, i: number) => {
+    e.stopPropagation();
+    if (i === sn.index) {
+      setSn({
+        index: i,
+      });
+      statusControlActions
+        ? dispatch(offActionPost())
+        : dispatch(onActionPost());
+    } else {
+      setSn({
+        index: i,
+      });
+      dispatch(onActionPost());
+    }
+  };
+
+  const onHandlePost = (actions: string, item: any) => {
+    switch (actions) {
+      case "delete":
+        deletePost(String(item._id))
+          .unwrap()
+          .then(() => {
+            getPostUser("0")
+              .unwrap()
+              .then((res) => setPostLists(res.data.docs))
+              .catch((err) => console.log(err));
+            message.success("Xoá bài viết thành công !!!");
+          })
+          .catch(() => message.error("Xoá bài viết thất bại"));
+        break;
+      case "hidden":
+        updatePost({ _id: item._id, status: !item.status })
+          .unwrap()
+          .then((res) => {
+            getPostUser("0")
+              .unwrap()
+              .then((res) => setPostLists(res.data.docs))
+              .catch((err) => console.log(err));
+            res.data.status
+              ? message.success("Bài viết đã được hiển thị trở lại !!!")
+              : message.success("Ẩn bài viết thành công !!!");
+          })
+          .catch(() => message.error("Rất tiếc đã xảy ra lỗiii "));
+        break;
+      default:
+        break;
+    }
+  };
+
   if (isLoading || resultGetPostUser.isLoading) return <Loading />;
   if (postLists.length == 0)
     return (
@@ -53,23 +118,59 @@ const PostUserComp = () => {
               </div>
               <div className="flex-col items-start">
                 <div>
-                  <Link
-                    to={`/profiles?id=${item.author._id}`}
+                  <a
+                    href={`/profiles?id=${item.author._id}`}
                     className="font-medium text-base"
                   >
                     {item.author.information.firstName}{" "}
                     {item.author.information.lastName}
-                  </Link>
+                  </a>
                 </div>
-                <h3 className="text-gray-500 text-sm">
-                  {moment(item.createdAt).fromNow()}
+                <h3 className="text-gray-500 text-sm flex items-center gap-x-2">
+                  {moment(item.createdAt).fromNow()}{" "}
+                  {!item.status && (
+                    <span>
+                      <RiChatPrivateFill size={20} />
+                    </span>
+                  )}
                 </h3>
               </div>
             </div>
-            <div>
-              <button className="rounded-full px-2 py-2 hover:bg-gray-200">
+            <div className="relative">
+              <button
+                onClick={(e) => onHandleControl(e, Number(index))}
+                className="rounded-full px-2 py-2 hover:bg-gray-200"
+              >
                 <BsThreeDots size={28} />
               </button>
+              {sn?.index == index && statusControlActions && (
+                <div className="absolute bg-white min-w-[180px] -left-[300%] rounded-md shadow-[rgba(0,0,0,0.05)_0px_6px_24px_0px,rgba(0,0,0,0.08)_0px_0px_0px_1px] pt-2 pb-3 ">
+                  {item.status ? (
+                    <button
+                      onClick={() => onHandlePost("hidden", item)}
+                      className="min-w-full text-base font-medium flex items-center gap-x-2 hover:bg-slate-100 transition-all rounded-md px-2 py-1"
+                    >
+                      <RiGitRepositoryPrivateFill size={20} />
+                      <span>Ẩn bài viết</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => onHandlePost("hidden", item)}
+                      className="min-w-full text-base font-medium flex items-center gap-x-2 hover:bg-slate-100 transition-all rounded-md px-2 py-1"
+                    >
+                      <BiSolidShow size={22} />
+                      <span>Hiển thị bài viết</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => onHandlePost("delete", item)}
+                    className="min-w-full text-red-600 text-base font-medium flex items-center gap-x-2 hover:bg-slate-100 transition-all rounded-md px-2 py-1"
+                  >
+                    <MdDeleteSweep size={23} />
+                    <span>Xoá bài viết</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           <div>

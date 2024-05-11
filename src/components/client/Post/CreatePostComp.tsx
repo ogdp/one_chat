@@ -82,7 +82,10 @@ const CreatePostComp = () => {
       };
       createPost(sendData)
         .unwrap()
-        .then(() => message.success("Đăng bài viết thành công !"))
+        .then(() => {
+          dispatch(closePostModel()),
+            message.success("Đăng bài viết thành công !");
+        })
         .catch(() => message.error("Tạo bài viết thất bại !"));
     } catch (error) {
       message.error("Tải ảnh lên thất bại !");

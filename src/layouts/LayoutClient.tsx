@@ -1,11 +1,17 @@
 import { Outlet } from "react-router-dom";
 import { HeaderComp } from "@/components";
 import NavBarComp from "@/components/client/NavBar/NavBarComp";
+import { useSelector, useDispatch } from "react-redux";
+import { onActionPost, offActionPost } from "@/slices";
 
 const LayoutClient = () => {
+  const dispatch = useDispatch();
   return (
     <>
-      <div className="bg-backgroundLight dark:bg-backgroundDark  text-gray-700">
+      <div
+        className="bg-backgroundLight dark:bg-backgroundDark  text-gray-700"
+        onClick={() => dispatch(offActionPost())}
+      >
         <aside>
           <div className="fixed top-0 left-0 min-w-full bg-white z-10">
             <HeaderComp />
