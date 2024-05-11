@@ -7,6 +7,7 @@ export const createPostSchema = Joi.object({
   images: Joi.array().items(Joi.string()),
 });
 export const updatePostSchema = Joi.object({
+  _id: Joi.string(),
   contents: Joi.string().max(3000).messages({
     "string.max": "contents length must be max 3000 characters",
   }),

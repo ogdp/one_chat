@@ -228,7 +228,7 @@ export const updatePost = async (req, res) => {
     return res.status(200).send({
       success: true,
       message: "Update post successfully",
-      post,
+      data: post,
     });
   } catch (error) {
     return res.status(400).send({
