@@ -1,4 +1,5 @@
 import {
+  useActionsPostMutation,
   useDeletePostMutation,
   useGetAllPostOneUserMutation,
   useGetMeQuery,
@@ -28,6 +29,7 @@ const PostUserComp = () => {
   const [deletePost] = useDeletePostMutation();
   const [updatePost] = useUpdatePostMutation();
   const [getPostUser, resultGetPostUser] = useGetAllPostOneUserMutation();
+  const [actionsPost] = useActionsPostMutation();
   const [sn, setSn] = useState<any>({ index: undefined });
   const [postLists, setPostLists] = useState([]);
   useEffect(() => {
@@ -91,6 +93,12 @@ const PostUserComp = () => {
       default:
         break;
     }
+  };
+  const onHandleActions = (payload: any) => {
+    actionsPost(payload)
+      .unwrap()
+      .then()
+      .catch((err) => console.log(err));
   };
 
   if (isLoading || resultGetPostUser.isLoading) return <Loading />;
@@ -199,7 +207,10 @@ const PostUserComp = () => {
             </div>
           </div>
           <div className="flex justify-between items-center pt-2 pb-3 mx-1 text-lg font-medium">
-            <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all">
+            <div
+              onClick={() => onHandleActions({ id: item._id, type: "like" })}
+              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all"
+            >
               <AiTwotoneLike size={18} />
               <button>Thích</button>
             </div>
@@ -207,7 +218,10 @@ const PostUserComp = () => {
               <AiOutlineComment size={18} />
               <button>Bình luận</button>
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all">
+            <div
+              onClick={() => onHandleActions({ id: item._id, type: "share" })}
+              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all"
+            >
               <AiOutlineShareAlt size={18} />
               <button>Chia sẻ</button>
             </div>

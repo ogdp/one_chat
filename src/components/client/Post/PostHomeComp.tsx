@@ -1,4 +1,4 @@
-import { useGetAllPostsQuery } from "@/api";
+import { useActionsPostMutation, useGetAllPostsQuery } from "@/api";
 import {
   AiOutlineComment,
   AiOutlineShareAlt,
@@ -12,13 +12,20 @@ moment.locale("vi");
 
 const PostHomeComp = () => {
   const { data, isLoading } = useGetAllPostsQuery("");
+  const [actionsPost] = useActionsPostMutation();
   if (isLoading) return;
   if (data.data.docs.length == 0)
     return (
       <div className="flex justify-center items-center px-7 mx-16 text-center text-xl">
-        Không có bài viết nào{" "}
+        Không có bài viết nào
       </div>
     );
+  const onHandleActions = (payload: any) => {
+    actionsPost(payload)
+      .unwrap()
+      .then()
+      .catch((err) => console.log(err));
+  };
   return (
     <>
       {data.data.docs.map((item: any, index: number) => (
@@ -82,7 +89,10 @@ const PostHomeComp = () => {
             </div>
           </div>
           <div className="flex justify-between items-center pb-3 mx-6 text-lg font-medium">
-            <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all">
+            <div
+              onClick={() => onHandleActions({ id: item._id, type: "like" })}
+              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all"
+            >
               <AiTwotoneLike size={18} />
               <button>Thích</button>
             </div>
@@ -90,7 +100,10 @@ const PostHomeComp = () => {
               <AiOutlineComment size={18} />
               <button>Bình luận</button>
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all">
+            <div
+              onClick={() => onHandleActions({ id: item._id, type: "share" })}
+              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all"
+            >
               <AiOutlineShareAlt size={18} />
               <button>Chia sẻ</button>
             </div>

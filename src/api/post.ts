@@ -57,6 +57,14 @@ export const postApi = createApi({
       }),
       invalidatesTags: ["Post"],
     }),
+    actionsPost: builder.mutation({
+      query: (payload: any) => ({
+        url: `/posts/actionsPost/${payload.id}?actions=${payload.type}`,
+        method: "POST",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Post"],
+    }),
   }),
 });
 
@@ -67,4 +75,5 @@ export const {
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,
+  useActionsPostMutation,
 } = postApi;

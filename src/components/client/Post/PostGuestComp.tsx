@@ -1,4 +1,4 @@
-import { useGetAllPostOneUserMutation } from "@/api";
+import { useActionsPostMutation, useGetAllPostOneUserMutation } from "@/api";
 import moment from "moment";
 import { Loading } from "@/pages";
 import { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ interface IProps {
 }
 const PostGuestComp = ({ guestId }: IProps) => {
   const [getPostUser, resultGetPostUser] = useGetAllPostOneUserMutation();
+  const [actionsPost] = useActionsPostMutation();
   const [postLists, setPostLists] = useState([]);
   useEffect(() => {
     if (guestId) {
@@ -23,6 +24,13 @@ const PostGuestComp = ({ guestId }: IProps) => {
         .catch((err) => console.log(err));
     }
   }, []);
+
+  const onHandleActions = (payload: any) => {
+    actionsPost(payload)
+      .unwrap()
+      .then()
+      .catch((err) => console.log(err));
+  };
   if (resultGetPostUser.isLoading) return <Loading />;
   if (postLists.length == 0)
     return (
@@ -92,7 +100,10 @@ const PostGuestComp = ({ guestId }: IProps) => {
               {item.shares.length > 0 ? item.shares.length + " chia sẻ" : ""}
             </div>
           </div>
-          <div className="flex justify-between items-center pt-2 pb-3 mx-1 text-lg font-medium">
+          <div
+            onClick={() => onHandleActions({ id: item._id, type: "like" })}
+            className="flex justify-between items-center pt-2 pb-3 mx-1 text-lg font-medium"
+          >
             <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all">
               <AiTwotoneLike size={18} />
               <button>Thích</button>
@@ -101,7 +112,10 @@ const PostGuestComp = ({ guestId }: IProps) => {
               <AiOutlineComment size={18} />
               <button>Bình luận</button>
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all">
+            <div
+              onClick={() => onHandleActions({ id: item._id, type: "share" })}
+              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all"
+            >
               <AiOutlineShareAlt size={18} />
               <button>Chia sẻ</button>
             </div>

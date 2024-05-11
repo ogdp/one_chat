@@ -38,6 +38,7 @@ import {
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,
+  useActionsPostMutation,
 } from "./post";
 
 import { locationApi, useGetLocationMutation } from "./location";
@@ -71,6 +72,7 @@ export {
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,
+  useActionsPostMutation,
   socket,
   customFetchBase,
   locationApi,
