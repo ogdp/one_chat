@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FiPower, FiSettings, FiUser, FiX } from "react-icons/fi";
 import { IUserPro } from "@/interface/user";
 import { useLogoutAccountMutation } from "@/api";
@@ -43,18 +43,18 @@ const UserDrawerPanel = ({ user, toggle }: IProps) => {
               />
             </div>
             <button className="font-semibold ">
-              <Link onClick={() => toggle()} to={"/profiles"}>
+              <a onClick={() => toggle()} href="/profiles">
                 {user?.information?.firstName} {user?.information?.lastName}
-              </Link>{" "}
+              </a>
             </button>
           </div>
           <div className="px-5 py-2 border-b-[1px] border-b-gray-200 hover:bg-gray-100">
-            <Link onClick={() => toggle()} to="/profiles">
+            <a onClick={() => toggle()} href="/profiles">
               <button className="flex items-center gap-x-1 justify-center font-medium">
                 <FiUser size={"18"} />
                 Thông tin tài khoản
               </button>
-            </Link>
+            </a>
           </div>
           <div className="px-5 py-2 border-b-[1px] border-b-gray-200 hover:bg-gray-100">
             <button

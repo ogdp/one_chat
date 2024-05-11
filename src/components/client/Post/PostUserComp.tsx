@@ -9,7 +9,6 @@ import {
   AiOutlineShareAlt,
   AiTwotoneLike,
 } from "react-icons/ai";
-import { Link } from "react-router-dom";
 import moment from "moment";
 import { Loading } from "@/pages";
 import { useEffect, useState } from "react";

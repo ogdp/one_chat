@@ -64,10 +64,10 @@ export const userApi = createApi({
 export const {
   useGetGuestQuery,
   useGetMeQuery,
+  useLazyGetMeQuery,
   useUpdateUserMutation,
   useSearchUserQuery,
   useLazySearchUserQuery,
-  useLazyGetMeQuery,
   useSendCodeMailMutation,
   useChangePassUserMutation,
 } = userApi;
