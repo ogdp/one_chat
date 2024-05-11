@@ -13,7 +13,7 @@ Router.use("/users", routerUser);
 Router.use("/auth", routerAuth);
 Router.use("/messages", routerMessage);
 Router.use("/chats", routerChat);
-Router.use("/actionsPost", routerActionsPost);
+Router.use("/posts/actionsPost", routerActionsPost);
 Router.use("/posts", routerPost);
 Router.use("/", upImages);
 export default Router;

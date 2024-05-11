@@ -38,17 +38,32 @@ export const like_comment_share = async (req, res) => {
       case "like":
         (async () => {
           try {
-            const like = await Post.updateMany(
-              {
-                _id: req.params.idPost,
-                status: true,
-              },
-              // Thêm uid nếu đã tồn tại nó sẽ không thêm nữa
-              { $addToSet: { likes: req.user._id } },
-              {
-                new: true,
-              }
+            // Switch like with $cond mongodb
+            const like = await Post.updateOne(
+              { _id: req.params.idPost, status: true },
+              [
+                {
+                  $set: {
+                    likes: {
+                      // https://www.mongodb.com/docs/v3.4/reference/operator/aggregation-conditional/
+                      $cond: {
+                        if: { $in: [req.user._id, "$likes"] },
+                        then: {
+                          $filter: {
+                            input: "$likes",
+                            as: "like",
+                            cond: { $ne: ["$$like", req.user._id] },
+                          },
+                        },
+                        else: { $concatArrays: ["$likes", [req.user._id]] },
+                      },
+                    },
+                  },
+                },
+              ],
+              { new: true }
             );
+
             if (like.modifiedCount == 0) {
               return res.status(400).send({
                 error: true,
