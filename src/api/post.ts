@@ -69,6 +69,7 @@ export const postApi = createApi({
       query: (payload: any) => ({
         url: `/posts/actionsPost/${payload.id}?actions=${payload.type}`,
         method: "POST",
+        body: payload,
         credentials: "include",
       }),
       invalidatesTags: ["Post"],

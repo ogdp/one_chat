@@ -12,12 +12,19 @@ import { IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import "moment/dist/locale/vi";
+import CommentComp from "./CommentComp";
+import { Avatar } from "antd";
+import { useState } from "react";
 moment.locale("vi");
 
 const PostHomeComp = () => {
   const { data: meData, isLoading: loadMe } = useGetMeQuery("me");
   const { data, isLoading } = useGetAllPostsQuery("");
   const [actionsPost] = useActionsPostMutation();
+  const [modalComments, setModalComments] = useState<string | undefined>(
+    undefined
+  );
+
   if (isLoading || loadMe) return;
   if (data.data.docs.length == 0)
     return (
@@ -107,7 +114,10 @@ const PostHomeComp = () => {
               <AiFillLike size={18} />
               <button>Thích</button>
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all">
+            <div
+              onClick={() => setModalComments(item._id)}
+              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all"
+            >
               <AiOutlineComment size={18} />
               <button>Bình luận</button>
             </div>
@@ -119,6 +129,43 @@ const PostHomeComp = () => {
               <button>Chia sẻ</button>
             </div>
           </div>
+          {modalComments == item._id && (
+            <>
+              <CommentComp item={item} />
+              <section className="py-2 px-2 border-t-[1px] ">
+                {item.comments.map((item: any, i: number) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-x-2 border-b-[1px] border-gray-100 pb-1"
+                  >
+                    <a href={`/profiles?id=${item?.user?._id}`}>
+                      <Avatar
+                        src={item?.user?.information?.avatar_url[0]}
+                        style={{
+                          margin: "0 3px",
+                        }}
+                        size={30}
+                      />
+                    </a>
+                    <div className="w-full">
+                      <h5 className="text-sm w-full flex justify-between items-center">
+                        <a href={`/profiles?id=${item?.user?._id}`}>
+                          <span className="line-clamp-1 font-medium">
+                            {item?.user?.information?.firstName}
+                            {item?.user?.information?.lastName}
+                          </span>
+                        </a>
+                        <span className="text-xs text-blue-700">
+                          {moment(item.createdAt).fromNow()}
+                        </span>
+                      </h5>
+                      <p className="text-xs line-clamp-1 "> {item.contents}</p>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            </>
+          )}
         </div>
       ))}
     </>

@@ -19,7 +19,8 @@ import { onActionPost, offActionPost } from "@/slices";
 import "moment/dist/locale/vi";
 import { MdDeleteSweep } from "react-icons/md";
 import { RiChatPrivateFill, RiGitRepositoryPrivateFill } from "react-icons/ri";
-import { message } from "antd";
+import { Avatar, message } from "antd";
+import CommentComp from "./CommentComp";
 import { BiSolidShow } from "react-icons/bi";
 moment.locale("vi");
 
@@ -30,6 +31,9 @@ const PostUserComp = () => {
   const [deletePost] = useDeletePostMutation();
   const [updatePost] = useUpdatePostMutation();
   const [actionsPost] = useActionsPostMutation();
+  const [modalComments, setModalComments] = useState<string | undefined>(
+    undefined
+  );
   const [sn, setSn] = useState<any>({ index: undefined });
 
   const statusControlActions = useSelector(
@@ -176,23 +180,23 @@ const PostUserComp = () => {
               />
             )}
           </div>
-          <div className="flex justify-between items-center mt-1 mx-6 text-sm font-medium border-b-[1px] border-b-gray-300">
-            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 px-6 rounded-xl cursor-pointer transition-all">
+          <div className="flex justify-between items-center mt-1  text-sm font-medium border-b-[1px] border-b-gray-300">
+            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 rounded-xl cursor-pointer transition-all">
               {item.likes.length > 0 ? item.likes.length + " thích" : ""}
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 px-6 rounded-xl cursor-pointer transition-all">
+            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 rounded-xl cursor-pointer transition-all">
               {item.comments.length > 0
                 ? item.comments.length + " bình luận"
                 : ""}
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 px-6 rounded-xl cursor-pointer transition-all">
+            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 rounded-xl cursor-pointer transition-all">
               {item.shares.length > 0 ? item.shares.length + " chia sẻ" : ""}
             </div>
           </div>
           <div className="flex justify-between items-center pt-2 pb-3 mx-1 text-lg font-medium">
             <div
               onClick={() => onHandleActions({ id: item._id, type: "like" })}
-              className={`flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all ${
+              className={`flex justify-center items-center hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all ${
                 item.likes.filter((_id: string) => {
                   return _id === meData.user._id ? true : false;
                 }).length
@@ -203,18 +207,58 @@ const PostUserComp = () => {
               <AiFillLike size={18} />
               <button>Thích</button>
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all">
+            <div
+              onClick={() => setModalComments(item._id)}
+              className="flex justify-center items-center hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all"
+            >
               <AiOutlineComment size={18} />
               <button>Bình luận</button>
             </div>
             <div
               onClick={() => onHandleActions({ id: item._id, type: "share" })}
-              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all"
+              className="flex justify-center items-center  hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all"
             >
               <AiOutlineShareAlt size={18} />
               <button>Chia sẻ</button>
             </div>
           </div>
+          {modalComments == item._id && (
+            <>
+              <CommentComp item={item} />
+              <section className="py-2 px-2 border-t-[1px] ">
+                {item.comments.map((item: any, i: number) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-x-2 border-b-[1px] border-gray-100 pb-1"
+                  >
+                    <a href={`/profiles?id=${item?.user?._id}`}>
+                      <Avatar
+                        src={item?.user?.information?.avatar_url[0]}
+                        style={{
+                          margin: "0 3px",
+                        }}
+                        size={30}
+                      />
+                    </a>
+                    <div className="w-full">
+                      <h5 className="text-sm w-full flex justify-between items-center">
+                        <a href={`/profiles?id=${item?.user?._id}`}>
+                          <span className="line-clamp-1 font-medium">
+                            {item?.user?.information?.firstName}
+                            {item?.user?.information?.lastName}
+                          </span>
+                        </a>
+                        <span className="text-xs text-blue-700">
+                          {moment(item.createdAt).fromNow()}
+                        </span>
+                      </h5>
+                      <p className="text-xs line-clamp-1 "> {item.contents}</p>
+                    </div>
+                  </div>
+                ))}
+              </section>
+            </>
+          )}
         </div>
       ))}
     </div>
