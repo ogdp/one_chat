@@ -86,6 +86,8 @@ export const like_comment_share = async (req, res) => {
       case "comment":
         (async () => {
           try {
+            delete req.body.type;
+            delete req.body.id;
             const { error } = await createCommentSchema.validate(req.body, {
               abortEarly: false,
             });

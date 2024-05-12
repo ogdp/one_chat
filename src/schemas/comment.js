@@ -9,6 +9,9 @@ export const createCommentSchema = Joi.object({
   post: Joi.string().required().messages({
     "string.required": "IdPost is required",
   }),
+  user: Joi.string().required().messages({
+    "string.required": "IdUser is required",
+  }),
 });
 export const updateCommentSchema = Joi.object({
   contents: Joi.string().trim().max(3000).messages({
@@ -18,5 +21,8 @@ export const updateCommentSchema = Joi.object({
   image: Joi.string(),
   post: Joi.string().required().messages({
     "string.required": "IdPost is required",
+  }),
+  user: Joi.string().required().messages({
+    "string.required": "IdUser is required",
   }),
 });

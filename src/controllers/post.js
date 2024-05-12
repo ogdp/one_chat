@@ -21,6 +21,18 @@ export const getAllPost = async (req, res) => {
           select:
             "information.firstName information.lastName information.avatar_url _id",
         },
+        {
+          path: "comments",
+          populate: [
+            {
+              path: "user",
+              select:
+                "information.firstName information.lastName information.avatar_url _id",
+            },
+          ],
+          options: { sort: { createdAt: -1 } },
+          // perDocumentLimit: _limitComment,
+        },
       ],
     };
     const posts = await Post.paginate(
@@ -56,6 +68,7 @@ export const getAllPostOneUser = async (req, res) => {
       _order = "asc",
       _limit = 20,
       _sort = "createdAt",
+      // _limitComment = 3,
     } = req.query;
     const options = {
       page: _page,
@@ -68,6 +81,18 @@ export const getAllPostOneUser = async (req, res) => {
           path: "author",
           select:
             "information.firstName information.lastName information.avatar_url _id",
+        },
+        {
+          path: "comments",
+          populate: [
+            {
+              path: "user",
+              select:
+                "information.firstName information.lastName information.avatar_url _id",
+            },
+          ],
+          options: { sort: { createdAt: -1 } },
+          // perDocumentLimit: _limitComment,
         },
       ],
     };
@@ -128,9 +153,20 @@ export const getOnePost = async (req, res) => {
           select:
             "information.firstName information.lastName information.avatar_url _id",
         },
+        {
+          path: "comments",
+          populate: [
+            {
+              path: "user",
+              select:
+                "information.firstName information.lastName information.avatar_url _id",
+            },
+          ],
+          options: { sort: { createdAt: -1 } },
+          // perDocumentLimit: _limitComment,
+        },
       ],
     };
-
     const post = await Post.paginate(
       {
         $and: [{ _id: String(req.params.idPost) }],
