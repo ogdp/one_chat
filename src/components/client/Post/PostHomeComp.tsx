@@ -1,8 +1,12 @@
-import { useActionsPostMutation, useGetAllPostsQuery } from "@/api";
 import {
+  useActionsPostMutation,
+  useGetAllPostsQuery,
+  useGetMeQuery,
+} from "@/api";
+import {
+  AiFillLike,
   AiOutlineComment,
   AiOutlineShareAlt,
-  AiTwotoneLike,
 } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
@@ -11,9 +15,10 @@ import "moment/dist/locale/vi";
 moment.locale("vi");
 
 const PostHomeComp = () => {
+  const { data: meData, isLoading: loadMe } = useGetMeQuery("me");
   const { data, isLoading } = useGetAllPostsQuery("");
   const [actionsPost] = useActionsPostMutation();
-  if (isLoading) return;
+  if (isLoading || loadMe) return;
   if (data.data.docs.length == 0)
     return (
       <div className="flex justify-center items-center px-7 mx-16 text-center text-xl">
@@ -91,9 +96,15 @@ const PostHomeComp = () => {
           <div className="flex justify-between items-center pb-3 mx-6 text-lg font-medium">
             <div
               onClick={() => onHandleActions({ id: item._id, type: "like" })}
-              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all"
+              className={`flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all ${
+                item.likes.filter((_id: string) => {
+                  return _id === meData.user._id ? true : false;
+                }).length
+                  ? "text-blue-700"
+                  : null
+              }`}
             >
-              <AiTwotoneLike size={18} />
+              <AiFillLike size={18} />
               <button>Thích</button>
             </div>
             <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all">

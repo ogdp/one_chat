@@ -23,6 +23,14 @@ export const postApi = createApi({
       }),
       providesTags: ["Post"],
     }),
+    getAllPostUser: builder.query({
+      query: (idUser: string) => ({
+        url: `/posts/all-post-user/${idUser}?_sort=createdAt&_order=desc`,
+        method: "GET",
+        credentials: "include",
+      }),
+      providesTags: ["Post"],
+    }),
     getAllPostOneUser: builder.mutation({
       query: (idUser: string) => ({
         url: `/posts/all-post-user/${idUser}?_sort=createdAt&_order=desc`,
@@ -72,6 +80,7 @@ export const {
   useGetAllPostsQuery,
   useGetOnePostQuery,
   useGetAllPostOneUserMutation,
+  useGetAllPostUserQuery,
   useCreatePostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,

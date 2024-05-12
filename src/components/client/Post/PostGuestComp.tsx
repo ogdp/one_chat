@@ -1,38 +1,34 @@
-import { useActionsPostMutation, useGetAllPostOneUserMutation } from "@/api";
+import {
+  useActionsPostMutation,
+  useGetAllPostUserQuery,
+  useGetMeQuery,
+} from "@/api";
 import moment from "moment";
 import { Loading } from "@/pages";
-import { useEffect, useState } from "react";
 import { RiChatPrivateFill } from "react-icons/ri";
 import {
+  AiFillLike,
   AiOutlineComment,
   AiOutlineShareAlt,
-  AiTwotoneLike,
 } from "react-icons/ai";
 moment.locale("vi");
 interface IProps {
   guestId: string;
 }
 const PostGuestComp = ({ guestId }: IProps) => {
-  const [getPostUser, resultGetPostUser] = useGetAllPostOneUserMutation();
+  const { data: meData, isLoading: loadMe } = useGetMeQuery("me");
+  const { data: listPosts, isLoading: loadPost } = useGetAllPostUserQuery(
+    String(guestId)
+  );
   const [actionsPost] = useActionsPostMutation();
-  const [postLists, setPostLists] = useState([]);
-  useEffect(() => {
-    if (guestId) {
-      getPostUser(String(guestId))
-        .unwrap()
-        .then((res) => setPostLists(res.data.docs))
-        .catch((err) => console.log(err));
-    }
-  }, []);
-
   const onHandleActions = (payload: any) => {
     actionsPost(payload)
       .unwrap()
       .then()
       .catch((err) => console.log(err));
   };
-  if (resultGetPostUser.isLoading) return <Loading />;
-  if (postLists.length == 0)
+  if (loadPost || loadMe) return <Loading />;
+  if (listPosts.data.docs.length == 0)
     return (
       <div className="flex justify-center items-center px-7 mx-16 text-center text-xl">
         Không có bài viết nào
@@ -40,7 +36,7 @@ const PostGuestComp = ({ guestId }: IProps) => {
     );
   return (
     <div className="w-full grid grid-cols-4 gap-x-3 my-8">
-      {postLists.map((item: any, index: number) => (
+      {listPosts.data.docs.map((item: any, index: number) => (
         <div
           key={index}
           className="rounded-xl px-3 bg-white shadow-[rgba(0,0,0,0.02)_0px_1px_3px_0px,rgba(27,31,35,0.15)_0px_0px_0px_1px] my-3"
@@ -100,12 +96,18 @@ const PostGuestComp = ({ guestId }: IProps) => {
               {item.shares.length > 0 ? item.shares.length + " chia sẻ" : ""}
             </div>
           </div>
-          <div
-            onClick={() => onHandleActions({ id: item._id, type: "like" })}
-            className="flex justify-between items-center pt-2 pb-3 mx-1 text-lg font-medium"
-          >
-            <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all">
-              <AiTwotoneLike size={18} />
+          <div className="flex justify-between items-center pt-2 pb-3 mx-1 text-lg font-medium">
+            <div
+              onClick={() => onHandleActions({ id: item._id, type: "like" })}
+              className={`flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all ${
+                item.likes.filter((_id: string) => {
+                  return _id === meData.user._id ? true : false;
+                }).length
+                  ? "text-blue-700"
+                  : null
+              }`}
+            >
+              <AiFillLike size={18} />
               <button>Thích</button>
             </div>
             <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all">

@@ -1,18 +1,18 @@
 import {
   useActionsPostMutation,
   useDeletePostMutation,
-  useGetAllPostOneUserMutation,
+  useGetAllPostUserQuery,
   useGetMeQuery,
   useUpdatePostMutation,
 } from "@/api";
 import {
+  AiFillLike,
   AiOutlineComment,
   AiOutlineShareAlt,
-  AiTwotoneLike,
 } from "react-icons/ai";
 import moment from "moment";
 import { Loading } from "@/pages";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { useSelector, useDispatch } from "react-redux";
 import { onActionPost, offActionPost } from "@/slices";
@@ -25,21 +25,12 @@ moment.locale("vi");
 
 const PostUserComp = () => {
   const dispatch = useDispatch();
-  const { data: meData, isLoading } = useGetMeQuery("me");
+  const { data: meData, isLoading: loadMe } = useGetMeQuery("me");
+  const { data: listPosts, isLoading: loadPost } = useGetAllPostUserQuery("0");
   const [deletePost] = useDeletePostMutation();
   const [updatePost] = useUpdatePostMutation();
-  const [getPostUser, resultGetPostUser] = useGetAllPostOneUserMutation();
   const [actionsPost] = useActionsPostMutation();
   const [sn, setSn] = useState<any>({ index: undefined });
-  const [postLists, setPostLists] = useState([]);
-  useEffect(() => {
-    if (meData) {
-      getPostUser("0")
-        .unwrap()
-        .then((res) => setPostLists(res.data.docs))
-        .catch((err) => console.log(err));
-    }
-  }, [isLoading]);
 
   const statusControlActions = useSelector(
     (state: any) => state.profilesSlices.toogleActionPost
@@ -68,10 +59,6 @@ const PostUserComp = () => {
         deletePost(String(item._id))
           .unwrap()
           .then(() => {
-            getPostUser("0")
-              .unwrap()
-              .then((res) => setPostLists(res.data.docs))
-              .catch((err) => console.log(err));
             message.success("Xoá bài viết thành công !!!");
           })
           .catch(() => message.error("Xoá bài viết thất bại"));
@@ -80,10 +67,6 @@ const PostUserComp = () => {
         updatePost({ _id: item._id, status: !item.status })
           .unwrap()
           .then((res) => {
-            getPostUser("0")
-              .unwrap()
-              .then((res) => setPostLists(res.data.docs))
-              .catch((err) => console.log(err));
             res.data.status
               ? message.success("Bài viết đã được hiển thị trở lại !!!")
               : message.success("Ẩn bài viết thành công !!!");
@@ -98,11 +81,11 @@ const PostUserComp = () => {
     actionsPost(payload)
       .unwrap()
       .then()
-      .catch((err) => console.log(err));
+      .catch((err) => message.error(err.data.message));
   };
 
-  if (isLoading || resultGetPostUser.isLoading) return <Loading />;
-  if (postLists.length == 0)
+  if (loadPost || loadMe) return <Loading />;
+  if (listPosts.data.docs.length == 0)
     return (
       <div className="flex justify-center items-center px-7 mx-16 text-center text-xl">
         Không có bài viết nào
@@ -110,7 +93,7 @@ const PostUserComp = () => {
     );
   return (
     <div className="w-full grid grid-cols-4 gap-x-3 my-8">
-      {postLists.map((item: any, index: number) => (
+      {listPosts.data.docs.map((item: any, index: number) => (
         <div
           key={index}
           className="rounded-xl px-3 bg-white shadow-[rgba(0,0,0,0.02)_0px_1px_3px_0px,rgba(27,31,35,0.15)_0px_0px_0px_1px] my-3"
@@ -209,9 +192,15 @@ const PostUserComp = () => {
           <div className="flex justify-between items-center pt-2 pb-3 mx-1 text-lg font-medium">
             <div
               onClick={() => onHandleActions({ id: item._id, type: "like" })}
-              className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all"
+              className={`flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all ${
+                item.likes.filter((_id: string) => {
+                  return _id === meData.user._id ? true : false;
+                }).length
+                  ? "text-blue-700"
+                  : null
+              }`}
             >
-              <AiTwotoneLike size={18} />
+              <AiFillLike size={18} />
               <button>Thích</button>
             </div>
             <div className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 py-2 rounded-xl cursor-pointer transition-all">
