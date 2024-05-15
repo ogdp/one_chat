@@ -49,7 +49,7 @@ const PostHomeComp = () => {
             <div className="flex justify-center items-start gap-x-2">
               <div>
                 <img
-                  src={item.author.information.avatar_url}
+                  src={item.author.information.avatar_url[0]}
                   alt=""
                   className="w-[45px] h-[45px] rounded-full overflow-hidden object-cover"
                 />

@@ -34,7 +34,7 @@ const UserDrawerPanel = ({ user, toggle }: IProps) => {
     <>
       <section className="fixed mt-[57px] z-10 top-0 right-0 shadow-[rgba(0,0,0,0.05)_0px_6px_24px_0px,rgba(0,0,0,0.08)_0px_0px_0px_1px]">
         <div className=" bg-white">
-          <div className="px-5 flex justify-between gap-x-2 border-b-[1px] border-b-gray-200 py-3 hover:bg-gray-100">
+          <div className="px-5 flex gap-x-2 border-b-[1px] border-b-gray-200 py-3 hover:bg-gray-100">
             <div>
               <img
                 src={user?.information?.avatar_url[0]}

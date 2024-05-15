@@ -111,7 +111,7 @@ const ProfilesPage = () => {
 
   switch (type) {
     case undefined:
-      return <div>Undefined</div>;
+      return <LoadingAll />;
     case "Guest":
       return viewGuest();
     case "Me":

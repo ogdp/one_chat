@@ -117,7 +117,7 @@ const CreatePostComp = () => {
               <div className="flex gap-x-4 py-4 border-b-[1px] border-b-gray-300">
                 <div className="w-[50px] h-[50px]">
                   <img
-                    src={meData?.user?.information?.avatar_url}
+                    src={meData?.user?.information?.avatar_url[0]}
                     className="rounded-full w-[50px] h-[50px] object-cover "
                   />
                 </div>

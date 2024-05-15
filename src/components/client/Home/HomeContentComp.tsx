@@ -20,7 +20,7 @@ const HomeContentComp = () => {
             <div className="flex gap-x-4 py-4 border-b-[1px] border-b-gray-300">
               <div className="rounded-full w-12 h-12 overflow-hidden">
                 <img
-                  src={meData?.user?.information?.avatar_url}
+                  src={meData?.user?.information?.avatar_url[0]}
                   alt=""
                   className="w-full object-contain h-full"
                 />
