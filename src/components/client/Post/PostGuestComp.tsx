@@ -14,6 +14,8 @@ import {
 import { useState } from "react";
 import CommentComp from "./CommentComp";
 import { Avatar } from "antd";
+import { Lightbox } from "react-modal-image";
+
 moment.locale("vi");
 interface IProps {
   guestId: string;
@@ -27,6 +29,11 @@ const PostGuestComp = ({ guestId }: IProps) => {
   const [modalComments, setModalComments] = useState<string | undefined>(
     undefined
   );
+  const [statusPopupImage, setStatusPopupImage] = useState<any>("");
+
+  const statusLightbox = (item: any) => {
+    setStatusPopupImage(item);
+  };
 
   const onHandleActions = (payload: any) => {
     actionsPost(payload)
@@ -87,6 +94,16 @@ const PostGuestComp = ({ guestId }: IProps) => {
                 src={item.images[0]}
                 alt=""
                 className="w-[423px] h-[333px]"
+                onClick={() => statusLightbox(item)}
+              />
+            )}
+            {statusPopupImage === item && (
+              <Lightbox
+                small={item.images[0]}
+                large={item.images[0]}
+                showRotate={true}
+                alt={`${item.author.information.firstName} ${item.author.information.lastName}`}
+                onClose={statusLightbox}
               />
             )}
           </div>

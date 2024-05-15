@@ -15,6 +15,8 @@ import "moment/dist/locale/vi";
 import CommentComp from "./CommentComp";
 import { Avatar } from "antd";
 import { useState } from "react";
+import { Lightbox } from "react-modal-image";
+
 moment.locale("vi");
 
 const PostHomeComp = () => {
@@ -24,6 +26,11 @@ const PostHomeComp = () => {
   const [modalComments, setModalComments] = useState<string | undefined>(
     undefined
   );
+  const [statusPopupImage, setStatusPopupImage] = useState<any>("");
+
+  const statusLightbox = (item: any) => {
+    setStatusPopupImage(item);
+  };
 
   if (isLoading || loadMe) return;
   if (data.data.docs.length == 0)
@@ -84,6 +91,16 @@ const PostHomeComp = () => {
                 src={item.images[0]}
                 alt=""
                 className="w-[623px] h-[623px]"
+                onClick={() => statusLightbox(item)}
+              />
+            )}
+            {statusPopupImage === item && (
+              <Lightbox
+                small={item.images[0]}
+                large={item.images[0]}
+                showRotate={true}
+                alt={`${item.author.information.firstName} ${item.author.information.lastName}`}
+                onClose={statusLightbox}
               />
             )}
           </div>

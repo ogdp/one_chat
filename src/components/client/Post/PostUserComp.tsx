@@ -22,6 +22,7 @@ import { RiChatPrivateFill, RiGitRepositoryPrivateFill } from "react-icons/ri";
 import { Avatar, message } from "antd";
 import CommentComp from "./CommentComp";
 import { BiSolidShow } from "react-icons/bi";
+import ModalImage, { Lightbox } from "react-modal-image";
 moment.locale("vi");
 
 const PostUserComp = () => {
@@ -35,10 +36,15 @@ const PostUserComp = () => {
     undefined
   );
   const [sn, setSn] = useState<any>({ index: undefined });
+  const [statusPopupImage, setStatusPopupImage] = useState<any>("");
 
   const statusControlActions = useSelector(
     (state: any) => state.profilesSlices.toogleActionPost
   );
+
+  const statusLightbox = (item: any) => {
+    setStatusPopupImage(item);
+  };
   const onHandleControl = (e: any, i: number) => {
     e.stopPropagation();
     if (i === sn.index) {
@@ -177,6 +183,16 @@ const PostUserComp = () => {
                 src={item.images[0]}
                 alt=""
                 className="w-[423px] h-[333px]"
+                onClick={() => statusLightbox(item)}
+              />
+            )}
+            {statusPopupImage === item && (
+              <Lightbox
+                small={item.images[0]}
+                large={item.images[0]}
+                showRotate={true}
+                alt={`${item.author.information.firstName} ${item.author.information.lastName}`}
+                onClose={statusLightbox}
               />
             )}
           </div>
