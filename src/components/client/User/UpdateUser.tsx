@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import { useGetLocationMutation } from "@/api";
 import { convertImageToBase64 } from "@/utils/function";
 import "@/css/UpdateUser.css";
+import * as faceapi from "face-api.js";
 
 dayjs.extend(customParseFormat);
 const UpdateUser = () => {
@@ -42,6 +43,7 @@ const UpdateUser = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [avatarFileSend, setAvatarFileSend] = useState<File | any>(undefined);
+  const [loadImageFace, setLoadImageFace] = useState<boolean>(false);
   // ---
 
   // Location
@@ -52,6 +54,7 @@ const UpdateUser = () => {
   useEffect(() => {
     (async () => {
       try {
+        await loadModels();
         if (meData) {
           const province: any = await getLocation("");
           setProvinceData(province?.data?.results);
@@ -61,6 +64,18 @@ const UpdateUser = () => {
       }
     })();
   }, []);
+
+  const loadModels = () => {
+    Promise.all([
+      faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+      faceapi.nets.faceExpressionNet.loadFromUri("/models"),
+    ]).then(() => {
+      // faceDetection();
+    });
+  };
 
   // Selected location
 
@@ -175,16 +190,31 @@ const UpdateUser = () => {
 
   const handleChange: UploadProps["onChange"] = async ({ file }) => {
     if (file.originFileObj) {
-      setAvatarFileSend(file);
-      const base64Image = await convertImageToBase64(file.originFileObj);
-      return setFileList([
-        {
-          uid: "-1",
-          name: "image.png",
-          status: "done",
-          url: String(base64Image),
-        },
-      ]);
+      const imageElement = document.createElement("img");
+      imageElement.src = URL.createObjectURL(file.originFileObj);
+      const netInput = imageElement;
+      setLoadImageFace(true);
+      try {
+        const detections1 = await faceapi.detectAllFaces(
+          netInput,
+          new faceapi.SsdMobilenetv1Options()
+        );
+        setLoadImageFace(false);
+        if (detections1.length === 0)
+          return message.error("Vui lòng chọn một ảnh chứa khuôn mặt ");
+        setAvatarFileSend(file);
+        const base64Image = await convertImageToBase64(file.originFileObj);
+        return setFileList([
+          {
+            uid: "-1",
+            name: "image.png",
+            status: "done",
+            url: String(base64Image),
+          },
+        ]);
+      } catch (error) {
+        setLoadImageFace(false);
+      }
     }
     if (file.status === "removed") {
       setAvatarFileSend(undefined);
@@ -200,7 +230,7 @@ const UpdateUser = () => {
   );
 
   //   ----
-
+  if (loadImageFace) return <LoadingAll />;
   return (
     <>
       {resultUpdateUser.isLoading ||
