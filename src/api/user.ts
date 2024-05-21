@@ -8,6 +8,13 @@ export const userApi = createApi({
   tagTypes: ["User"],
   baseQuery: customFetchBase,
   endpoints: (builder) => ({
+    getUserSuggest: builder.query({
+      query: () => ({
+        url: `/users/get-user-suggest`,
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
     getMe: builder.query({
       query: (me: string) => ({
         url: `/users/${me}`,
@@ -62,6 +69,7 @@ export const userApi = createApi({
 });
 
 export const {
+  useGetUserSuggestQuery,
   useGetGuestQuery,
   useGetMeQuery,
   useLazyGetMeQuery,

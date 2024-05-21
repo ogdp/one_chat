@@ -28,56 +28,48 @@ const CommentComp = (item: IPost | any) => {
   };
   return (
     <>
-      <section className="pt-3 px-2 border-t-[1px] border-t-gray-100">
+      <section className="max-lg:pt-0 max-lg:px-0 pt-3 px-2 border-t-[1px] border-t-gray-100">
         <Form
           form={form}
           name="validate_other"
           onFinish={onFinish}
           style={{ width: "100%", height: "65px" }}
         >
-          <Form.Item style={{ marginBottom: 0 }}>
-            <Form.Item
-              style={{
-                display: "inline-block",
-                width: "10%",
-                justifyContent: "right",
-                alignItems: "center",
-              }}
-              className="relative"
-            >
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            className="inline-block justify-center items-center w-full"
+          >
+            <Form.Item className="relative max-lg:pr-1">
               <Avatar
                 src={meData?.user?.information?.avatar_url[0]}
-                style={{
-                  float: "right",
-                  marginRight: "10px",
-                }}
+                className="mx-[5px]"
                 size={35}
-              />
-            </Form.Item>
-            <Form.Item
-              name="contents"
-              rules={[{ required: true, message: "Hãy điền nội dung chat" }]}
-              style={{
-                display: "inline-block",
-                width: "86%",
-              }}
-            >
-              <Space.Compact
-                style={{ width: "100%", outline: "0" }}
-                size="large"
+              />{" "}
+              <Form.Item
+                name="contents"
+                rules={[{ required: true, message: "Hãy điền nội dung chat" }]}
+                style={{
+                  display: "inline-block",
+                }}
+                className="max-lg:w-[80%] w-[calc(100%_-_57px)]"
               >
-                <Input
-                  style={{ height: "40px" }}
-                  placeholder="Nhập nội dung chat"
-                  value={String(content)} // Thêm giá trị từ state
-                  onChange={(e: any) => setContent(e.target.value)} // Hàm cập nhật state
-                />
-                <Button type="default" htmlType="submit">
-                  <div>
-                    <BsFillSendFill />
-                  </div>
-                </Button>
-              </Space.Compact>
+                <Space.Compact
+                  style={{ width: "100%", outline: "0" }}
+                  size="large"
+                >
+                  <Input
+                    style={{ height: "40px" }}
+                    placeholder="Nhập nội dung chat"
+                    value={String(content)} // Thêm giá trị từ state
+                    onChange={(e: any) => setContent(e.target.value)} // Hàm cập nhật state
+                  />
+                  <Button type="default" htmlType="submit">
+                    <div>
+                      <BsFillSendFill />
+                    </div>
+                  </Button>
+                </Space.Compact>
+              </Form.Item>
             </Form.Item>
           </Form.Item>
         </Form>

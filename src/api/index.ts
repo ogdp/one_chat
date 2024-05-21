@@ -10,6 +10,7 @@ import {
 // User API
 import {
   userApi,
+  useGetUserSuggestQuery,
   useGetGuestQuery,
   useGetMeQuery,
   useUpdateUserMutation,
@@ -51,6 +52,7 @@ export {
   useSiginupAccountMutation,
   useLogoutAccountMutation,
   userApi,
+  useGetUserSuggestQuery,
   useGetGuestQuery,
   useGetMeQuery,
   useUpdateUserMutation,

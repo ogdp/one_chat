@@ -15,7 +15,7 @@ const SearchUser = () => {
   };
   return (
     <>
-      <div className="flex flex-col p-2 w-[500px]">
+      <div className="flex flex-col p-2 max-w-[500px] lg:w-[500px]">
         <form action="" onSubmit={(e) => onSearch(e)}>
           <div
             className="bg-white items-center justify-between w-full flex rounded-full shadow-lg p-2 py-1"

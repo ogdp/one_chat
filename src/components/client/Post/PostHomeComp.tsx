@@ -50,28 +50,28 @@ const PostHomeComp = () => {
       {data.data.docs.map((item: any, index: number) => (
         <div
           key={index}
-          className="rounded-xl px-7 mx-16 bg-white shadow-[rgba(0,0,0,0.02)_0px_1px_3px_0px,rgba(27,31,35,0.15)_0px_0px_0px_1px] my-3"
+          className="rounded-xl max-lg:mx-4 max-lg:px-3 max-lg:py-2 px-7 mx-16 bg-white shadow-[rgba(0,0,0,0.02)_0px_1px_3px_0px,rgba(27,31,35,0.15)_0px_0px_0px_1px] my-3 max-lg:w-full"
         >
-          <div className="flex justify-between items-center gap-x-2 py-5">
-            <div className="flex justify-center items-start gap-x-2">
+          <div className="flex justify-between items-center gap-x-2 lg:py-5">
+            <div className="flex lg:justify-center max-lg:items-center lg:items-start gap-x-2">
               <div>
                 <img
                   src={item.author.information.avatar_url[0]}
                   alt=""
-                  className="w-[45px] h-[45px] rounded-full overflow-hidden object-cover"
+                  className="w-[45px] h-[45px] max-lg:w-[30px] max-lg:h-[30px] rounded-full overflow-hidden object-cover"
                 />
               </div>
               <div className="flex-col items-start">
                 <div>
                   <Link
                     to={`/profiles?id=${item.author._id}`}
-                    className="font-medium text-base"
+                    className="font-medium text-base max-lg:text-xs"
                   >
                     {item.author.information.firstName}{" "}
                     {item.author.information.lastName}
                   </Link>
                 </div>
-                <h3 className="text-gray-500 text-sm">
+                <h3 className="text-gray-500 text-sm max-lg:text-xs">
                   {moment(item.createdAt).fromNow()}
                 </h3>
               </div>
@@ -90,7 +90,7 @@ const PostHomeComp = () => {
               <img
                 src={item.images[0]}
                 alt=""
-                className="w-[623px] h-[623px]"
+                className="max-lg:w-[300px] max-lg:h-[300px] w-[623px] h-[623px]"
                 onClick={() => statusLightbox(item)}
               />
             )}
@@ -104,16 +104,16 @@ const PostHomeComp = () => {
               />
             )}
           </div>
-          <div className="flex justify-between items-center mt-1 mx-6 text-sm font-medium border-b-[1px] border-b-gray-300">
-            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 px-6 rounded-xl cursor-pointer transition-all">
+          <div className="flex justify-between items-center mt-1 mx-6 max-lg:mx-0 text-sm max-lg:xs font-medium border-b-[1px] border-b-gray-300">
+            <div className="flex justify-center items-center  hover:underline w-1/3 max-lg:px-3 px-6 rounded-xl cursor-pointer transition-all">
               {item.likes.length > 0 ? item.likes.length + " thích" : ""}
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 px-6 rounded-xl cursor-pointer transition-all">
+            <div className="flex justify-center items-center  hover:underline w-1/3 max-lg:px-3 px-6 rounded-xl cursor-pointer transition-all">
               {item.comments.length > 0
                 ? item.comments.length + " bình luận"
                 : ""}
             </div>
-            <div className="flex justify-center items-center gap-x-2 hover:underline w-1/3 px-6 rounded-xl cursor-pointer transition-all">
+            <div className="flex justify-center items-center  hover:underline w-1/3 max-lg:px-3 px-6 rounded-xl cursor-pointer transition-all">
               {item.shares.length > 0 ? item.shares.length + " chia sẻ" : ""}
             </div>
           </div>
@@ -128,22 +128,22 @@ const PostHomeComp = () => {
                   : null
               }`}
             >
-              <AiFillLike size={18} />
-              <button>Thích</button>
+              <AiFillLike className="max-lg:text-[28px] text-[24px]" />
+              <button className="max-lg:hidden">Thích</button>
             </div>
             <div
               onClick={() => setModalComments(item._id)}
               className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all"
             >
-              <AiOutlineComment size={18} />
-              <button>Bình luận</button>
+              <AiOutlineComment className="max-lg:text-[28px] text-[24px]" />
+              <button className="max-lg:hidden">Bình luận</button>
             </div>
             <div
               onClick={() => onHandleActions({ id: item._id, type: "share" })}
               className="flex justify-center items-center gap-x-2 hover:bg-gray-200 w-1/3 px-6 py-3 rounded-xl cursor-pointer transition-all"
             >
-              <AiOutlineShareAlt size={18} />
-              <button>Chia sẻ</button>
+              <AiOutlineShareAlt className="max-lg:text-[28px] text-[24px]" />
+              <button className="max-lg:hidden">Chia sẻ</button>
             </div>
           </div>
           {modalComments == item._id && (
