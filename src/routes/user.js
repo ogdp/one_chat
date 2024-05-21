@@ -9,6 +9,7 @@ import {
   update,
   search,
   updatePass,
+  getUserSuggest,
 } from "../controllers/user.js";
 import { getCode } from "../controllers/mailer.js";
 
@@ -16,6 +17,7 @@ const router = express.Router();
 
 router.get("/", getAll);
 router.get("/me", checkTokenOwnership, getMe);
+router.get("/get-user-suggest", checkTokenOwnership, getUserSuggest);
 router.get("/:uid", getGuest);
 router.post("", create);
 router.patch("/", checkTokenOwnership, update);

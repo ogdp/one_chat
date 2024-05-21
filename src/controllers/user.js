@@ -65,6 +65,41 @@ export const getMe = async (req, res) => {
     });
   }
 };
+export const getUserSuggest = async (req, res) => {
+  try {
+    const { _page = 1, _order = "asc", _sort = "createdAt" } = req.query;
+    const options = {
+      page: _page,
+      limit: 20,
+      sort: {
+        [_sort]: _order == "desc" ? 1 : -1,
+      },
+      select: "-refreshToken -password -email_tel -updatedAt -createdAt -code",
+    };
+    const user = await User.paginate(
+      {
+        active_status: "active",
+        deleted: "false",
+      },
+      options
+    );
+    const { totalDocs } = await user;
+    if (!totalDocs || totalDocs === 0) {
+      return res.status(404).json({
+        message: "Không tìm thấy người dùng",
+        user,
+      });
+    }
+    return res.status(200).json({
+      message: "Danh sách người dùng",
+      user,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: error.message,
+    });
+  }
+};
 const filterUserForGuest = (user) => {
   const {
     _id,
