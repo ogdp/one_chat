@@ -18,21 +18,22 @@
 
 ## Chức năng
 
-- **Quản lý tin nhắn**
-- **Cập nhật thông tin**
-- **Thay đổi mật khẩu**
+- **Quản lý tin nhắn, Xoá tin nhắn, Emoji**
 - **Đăng bài viết mới**
-- **Đăng xuất khỏi tất cả các thiết bị**
-- **Cảm xúc, bình luận, chia sẻ bài viết**
+- **Ẩn-hiện, Xoá, Cảm xúc, bình luận, chia sẻ bài viết**
+- **Thay đổi mật khẩu**
+- **Cập nhật thông tin**
+- **Đăng xuất khỏi tất cả các thiết bị - Pendding**
 
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1715066884/images_noname/shicylxovkwoeydz3r5g.png)
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1715066983/images_noname/oyeeip0zhornqbevibqk.png)
-![Alt text](https://i.ibb.co/tDLBDKw/Screenshot-2024-05-12-014209.png)
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1715453171/images_noname/mzrrokkp4tovxzfzmuew.png)
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1715453283/images_noname/y3ga5g571ogbmgdagm6z.png)
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/h3zfolnm3x5nwreqzdtb.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1716395610/images_noname/ofpvbxbxb38wv2xvlowd.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1716395920/images_noname/ntdgvcznzzgd8cyqvlrt.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1716394721/images_noname/f0ciecrrobz1ynqh2tnv.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1716396168/images_noname/gfhqekq66f2in6rl1nqj.png)
 ![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/wk9jor09vogogylf1orr.png)
-![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1713900247/images_noname/zylks4mibhzry0b3dtsz.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1716396275/images_noname/nflrp4mkvoreymoxv54y.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1715066983/images_noname/oyeeip0zhornqbevibqk.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1716394610/images_noname/cr8977zuoaacf4ovmrs9.png)
+![Alt text](https://res.cloudinary.com/dihqzuybm/image/upload/v1716395024/images_noname/liapxmupnouvd1gp9lnz.png)
 
 ## Cài đặt
 
